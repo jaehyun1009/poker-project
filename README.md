@@ -12,3 +12,4 @@ https://www.partypoker.com/en/how-to-play/texas-holdem
 
 ## Resources
 Spinning poker chip image: https://dribbble.com/shots/3151889-Poker-Chip-Spin
+Images of 52 playing cards: http://acbl.mybigcommerce.com/52-playing-cards/

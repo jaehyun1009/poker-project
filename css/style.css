@@ -76,7 +76,7 @@ button {
 
 }
 
-button:hover {
+button:hover:not([disabled]) {
 
     color: red;
 
@@ -89,10 +89,10 @@ button:hover {
     border-color: maroon;
     border-radius: 100px;
     margin: 0;
-    width: 800px;
-    height: 400px;
+    width: 650px;
+    height: 300px;
     position: absolute;
-    top: 47%;
+    top: 45%;
     left: 50%;
     margin-right: 50%;
     transform: translate(-50%, -50%);
@@ -105,7 +105,7 @@ button:hover {
     border-style: solid;
     border-radius: 10px;
     width: 400px;
-    height: 100px;
+    height: 115px;
     position: relative;
     top: 50%;
     left: 50%;
@@ -120,8 +120,7 @@ button:hover {
 .card {
 
     width: 60px;
-    height: 80px;
-    background-color: black;
+    height: 90px;
 
 }
 
@@ -168,22 +167,22 @@ button:hover {
 
     border-color: cornflowerblue;
     top: 105%;
-    right: 38%;
+    right: 35%;
 
 }
 
 #player1 {
 
     border-color: goldenrod;
-    top: -57%;
-    right: 38%;
+    top: -74%;
+    right: 35%;
 
 }
 
 #player2 {
 
     border-color: lightcoral;
-    top: 25%;
+    top: 17%;
     right: 103%;
 
 }
@@ -191,8 +190,8 @@ button:hover {
 #player3 {
 
     border-color: yellowgreen;
-    top: 25%;
-    right: -26%;
+    top: 17%;
+    right: -32%;
 
 }
 
@@ -200,15 +199,15 @@ button:hover {
 
     border-color: thistle;
     top: 105%;
-    right: 68%;
+    right: 65%;
 
 }
 
 #player5 {
 
     border-color: fuchsia;
-    top: -57%;
-    right: 8%;
+    top: -74%;
+    right: 5%;
 
 }
 
@@ -216,14 +215,14 @@ button:hover {
 
     border-color: cadetblue;
     top: 105%;
-    right: 8%;
+    right: 5%;
 
 }
 
 #player7 {
 
     border-color: aquamarine;
-    top: -57%;
-    right: 68%;
+    top: -74%;
+    right: 65%;
 
 }

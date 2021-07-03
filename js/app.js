@@ -65,10 +65,30 @@ class Card{
 
 */
 const mainMenuEl = document.getElementById(`main-menu`)
-const tableEl = document.getElementById(`table`)
-const buttonEls = document.querySelectorAll(`#buttons > button`)
 const startGameEl = document.getElementById(`start-game`)
+
+const buttonEls = document.querySelectorAll(`#buttons > button`)
+const turnButtonEl = document.getElementById(`turn`)
 const mainMenuButtonEl = document.getElementById(`goto-main`)
+const resetButtonEl = document.getElementById(`reset`)
+
+const tableEl = document.getElementById(`table`)
+const tableCard0El = document.getElementById(`table-card-0`)
+const tableCard1El = document.getElementById(`table-card-1`)
+const tableCard2El = document.getElementById(`table-card-2`)
+const tableCard3El = document.getElementById(`table-card-3`)
+const tableCard4El = document.getElementById(`table-card-4`)
+
+/*
+
+    Variables
+    deck: array representing 52 cards (deck)
+    
+*/
+let deck = []
+let tableCards = []
+let stage = 0
+let players = [{money: null, bet: null, cards: null, bestHand: null}]
 
 /*
 
@@ -84,17 +104,54 @@ mainMenuButtonEl.addEventListener(`click`, function(){
 
 startGameEl.addEventListener(`click`, function(){
 
+    stage = 0
     render()
 
 })
 
-/*
+turnButtonEl.addEventListener(`click`, function(){
 
-    Variables
-    deck: array representing 52 cards (deck)
-    
-*/
-let deck = []
+    switch (stage){
+
+        case 0:
+            stage = 1
+            deck.pop() // burn card
+            tableCards.push(deck.pop())
+            tableCards.push(deck.pop())
+            tableCards.push(deck.pop())
+            break
+
+        case 1:
+            stage = 2
+            deck.pop()
+            tableCards.push(deck.pop())
+            break
+
+        case 2:
+            stage = 3
+            deck.pop()
+            tableCards.push(deck.pop())
+            break
+
+        default: // case 3
+            stage = 0
+            resetTable()
+            break
+
+    }
+
+    render()
+
+})
+
+resetButtonEl.addEventListener(`click`, function(){
+
+    if (window.confirm(`Are you sure you want to reset the current round?`)){
+        resetTable()
+        render()
+    }
+
+})
 
 /*
 
@@ -142,20 +199,26 @@ function shuffle(){
 
 }
 
-/*
+// Resets table status and reshuffles the deck
+function resetTable(){
 
-newDeck()
-shuffle()
+    tableCard0El.innerHTML = ``
+    tableCard1El.innerHTML = ``
+    tableCard2El.innerHTML = ``
+    tableCard3El.innerHTML = ``
+    tableCard4El.innerHTML = ``
 
-for (let i=0; i<deck.length; i++){
-    console.log(`${deck[i].getRank()} of ${deck[i].getSuit()}`)
+    newDeck()
+    shuffle()
+    tableCards = []
+    stage = 0
+
 }
-
-*/
 
 //
 function init(){
 
+    // Initial state. Show main menu and hide game state.
     mainMenuEl.hidden = false
 
     tableEl.hidden = true
@@ -165,11 +228,14 @@ function init(){
 
     }
 
+    resetTable()
+
 }
 
 //
 function render(){
 
+    // Hide main menu and show game state
     mainMenuEl.hidden = true
 
     tableEl.hidden = false
@@ -177,6 +243,32 @@ function render(){
 
         buttonEl.hidden = false
 
+    }
+
+    console.log(stage)
+
+    if (stage == 0){
+        turnButtonEl.innerText = `Flop`
+        resetButtonEl.disabled = true
+    }
+
+    if (stage > 0){ // flop
+        tableCard0El.innerHTML = `<img width="60" height="90" src="./img/cards/${tableCards[0].rank}_${tableCards[0].suit}.png" alt="Table card slot 1">`
+        tableCard1El.innerHTML = `<img width="60" height="90" src="./img/cards/${tableCards[1].rank}_${tableCards[1].suit}.png" alt="Table card slot 2">`
+        tableCard2El.innerHTML = `<img width="60" height="90" src="./img/cards/${tableCards[2].rank}_${tableCards[2].suit}.png" alt="Table card slot 3">`
+        turnButtonEl.innerText = `Turn`
+        resetButtonEl.disabled = false
+    }
+
+    if (stage > 1){ // turn
+        tableCard3El.innerHTML = `<img width="60" height="90" src="./img/cards/${tableCards[3].rank}_${tableCards[3].suit}.png" alt="Table card slot 4">`
+        turnButtonEl.innerText = `River`
+    }
+
+    if (stage > 2){ // river
+        tableCard4El.innerHTML = `<img width="60" height="90" src="./img/cards/${tableCards[4].rank}_${tableCards[4].suit}.png" alt="Table card slot 5">`
+        turnButtonEl.innerText = `Reset`
+        resetButtonEl.disabled = true
     }
 
 }
