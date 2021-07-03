@@ -61,6 +61,35 @@ class Card{
 
 /*
 
+    DOM Elements
+
+*/
+const mainMenuEl = document.getElementById(`main-menu`)
+const tableEl = document.getElementById(`table`)
+const buttonEls = document.querySelectorAll(`#buttons > button`)
+const startGameEl = document.getElementById(`start-game`)
+const mainMenuButtonEl = document.getElementById(`goto-main`)
+
+/*
+
+    Event Listeners
+
+*/
+mainMenuButtonEl.addEventListener(`click`, function(){
+
+    if (window.confirm(`Going back to the main menu will reset the entire game.\nAre you sure you want to go back?`))
+        init()
+
+})
+
+startGameEl.addEventListener(`click`, function(){
+
+    render()
+
+})
+
+/*
+
     Variables
     deck: array representing 52 cards (deck)
     
@@ -122,10 +151,34 @@ for (let i=0; i<deck.length; i++){
     console.log(`${deck[i].getRank()} of ${deck[i].getSuit()}`)
 }
 
+*/
+
+//
 function init(){
+
+    mainMenuEl.hidden = false
+
+    tableEl.hidden = true
+    for (const buttonEl of buttonEls){
+
+        buttonEl.hidden = true
+
+    }
+
+}
+
+//
+function render(){
+
+    mainMenuEl.hidden = true
+
+    tableEl.hidden = false
+    for (const buttonEl of buttonEls){
+
+        buttonEl.hidden = false
+
+    }
 
 }
 
 init()
-
-*/
