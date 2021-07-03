@@ -45,11 +45,17 @@ a:hover {
 
 }
 
-p {
+form > p {
 
     font-size: 56px;
     margin: 0 auto;
     display: inline-block;
+
+}
+
+.gambler > p {
+
+    font-size: 12px;
 
 }
 
@@ -86,7 +92,7 @@ button:hover {
     width: 800px;
     height: 400px;
     position: absolute;
-    top: 45%;
+    top: 47%;
     left: 50%;
     margin-right: 50%;
     transform: translate(-50%, -50%);
@@ -105,7 +111,6 @@ button:hover {
     left: 50%;
     margin-right: 50%;
     transform: translate(-50%, -50%);
-
     display: flex;
     justify-content: space-evenly;
     align-items: center;
@@ -129,5 +134,96 @@ button:hover {
     position: fixed;
     bottom: 10px;
     width: 100%;
+
+}
+
+.hand {
+
+    margin: 10px;
+    display: flex;
+    flex-direction: row;
+    justify-content: space-evenly;
+
+}
+
+.gambler > p {
+
+    margin: 10px;
+    font-size: 18px;
+    font-family: 'Marcellus', sans-serif;
+
+}
+
+.gambler {
+
+    border-style: solid;
+    border-radius: 10px;
+    width: 180px;
+    height: 200px;
+    position: absolute;
+
+}
+
+#player0 {
+
+    border-color: cornflowerblue;
+    top: 105%;
+    right: 38%;
+
+}
+
+#player1 {
+
+    border-color: goldenrod;
+    top: -57%;
+    right: 38%;
+
+}
+
+#player2 {
+
+    border-color: lightcoral;
+    top: 25%;
+    right: 103%;
+
+}
+
+#player3 {
+
+    border-color: yellowgreen;
+    top: 25%;
+    right: -26%;
+
+}
+
+#player4 {
+
+    border-color: thistle;
+    top: 105%;
+    right: 68%;
+
+}
+
+#player5 {
+
+    border-color: fuchsia;
+    top: -57%;
+    right: 8%;
+
+}
+
+#player6 {
+
+    border-color: cadetblue;
+    top: 105%;
+    right: 8%;
+
+}
+
+#player7 {
+
+    border-color: aquamarine;
+    top: -57%;
+    right: 68%;
 
 }
