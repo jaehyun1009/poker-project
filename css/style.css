@@ -4,6 +4,78 @@ body {
     font-family: 'Marcellus', sans-serif;
 }
 
+#main-menu {
+
+    text-align: center;
+    min-width: 800px;
+
+}
+
+#title {
+
+    display: flex;
+    flex-flow: row wrap;
+    justify-content: center;
+
+}
+
+#title > img {
+
+    width: 296px;
+    height: 222px;
+
+}
+
+h1 {
+
+    font-size: 80px;
+
+}
+
+a {
+
+    font-size: 56px;
+    text-decoration: none;
+
+}
+
+a:hover {
+
+    text-decoration: underline;
+
+}
+
+p {
+
+    font-size: 56px;
+    margin: 0 auto;
+    display: inline-block;
+
+}
+
+select {
+
+    outline: 0;
+    border: none;
+    font-size: 48px;
+
+}
+
+button {
+
+    border: none;
+    font-size: 56px;
+    font-family: 'Marcellus', sans-serif;
+    background-color: white;
+
+}
+
+button:hover {
+
+    color: red;
+
+}
+
 #table {
 
     background-color: limegreen;
@@ -17,7 +89,7 @@ body {
     top: 45%;
     left: 50%;
     margin-right: 50%;
-    transform: translate(-50%, -50%)
+    transform: translate(-50%, -50%);
 
 }
 
@@ -25,7 +97,7 @@ body {
 
     border-color: lightgreen;
     border-style: solid;
-    border-radius: 30px;
+    border-radius: 10px;
     width: 400px;
     height: 100px;
     position: relative;
@@ -42,8 +114,8 @@ body {
 
 .card {
 
-    width: 50px;
-    height: 75px;
+    width: 60px;
+    height: 80px;
     background-color: black;
 
 }
@@ -57,20 +129,5 @@ body {
     position: fixed;
     bottom: 10px;
     width: 100%;
-
-}
-
-button {
-
-    border: none;
-    font-size: 64px;
-    font-family: 'Marcellus', sans-serif;
-    background-color: white;
-
-}
-
-button:hover {
-
-    color: red;
 
 }

@@ -86,7 +86,8 @@ function newDeck(){
 
 }
 
-//
+// Uses Fisher-Yates algorithm to shuffle, then the deck is split and rejoined,
+// Do this process many times to get a good shuffle, like a human would divide the deck many times to shuffle.
 function shuffle(){
 
     let randomTimes = 10
@@ -101,16 +102,18 @@ function shuffle(){
             deck[i] = deck[j]
             deck[j] = shuffledDeck
 
-        }
+            let randomSlicer = Math.floor(Math.random() * deck.length)
+            let partOne = deck.slice(0, randomSlicer)
+            let partTwo = deck.slice(randomSlicer, deck.length)
+            deck = partTwo.concat(partOne)
 
-    let randomSlicer = Math.floor(Math.random() * deck.length)
-    let partOne = deck.slice(0, randomSlicer)
-    let partTwo = deck.slice(randomSlicer, deck.length)
-    deck = partTwo.concat(partOne)
+        }
 
     }
 
 }
+
+/*
 
 newDeck()
 shuffle()
@@ -118,3 +121,11 @@ shuffle()
 for (let i=0; i<deck.length; i++){
     console.log(`${deck[i].getRank()} of ${deck[i].getSuit()}`)
 }
+
+function init(){
+
+}
+
+init()
+
+*/

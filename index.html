@@ -16,7 +16,23 @@
         <!--[if lt IE 7]>
             <p class="browsehappy">You are using an <strong>outdated</strong> browser. Please <a href="#">upgrade your browser</a> to improve your experience.</p>
         <![endif]-->
-        <div id="table">
+        <div id="main-menu">
+            <div id="title">
+                <img src="./img/poker-chip.gif" alt="Spinning Poker Chip">
+                <h1>Poker</h1>
+                <img src="./img/poker-chip.gif" alt="Spinning Poker Chip">
+            </div>
+            <a href="https://github.com/jaehyun1009/poker-project" target="_blank">About</a>
+            <form>
+                <p>Number of Players (1)&nbsp;</p>
+                <select>
+                    <option>1</option>
+                </select>
+            </form>
+            <button>Start</button>
+        </div>
+
+        <div id="table" hidden>
 
             <div id="cards">
                 <div class="card"></div>
@@ -26,44 +42,44 @@
                 <div class="card"></div>
             </div>
 
-        </div>
+            <div id="player0" class="gambler">
 
-        <div id="player0" class="gambler">
+            </div>
 
-        </div>
+            <div id="player1" class="gambler">
+                
+            </div>
 
-        <div id="player1" class="gambler">
-            
-        </div>
+            <div id="player2" class="gambler">
+                
+            </div>
 
-        <div id="player2" class="gambler">
-            
-        </div>
+            <div id="player3" class="gambler">
+                
+            </div>
 
-        <div id="player3" class="gambler">
-            
-        </div>
+            <div id="player4" class="gambler">
+                
+            </div>
 
-        <div id="player4" class="gambler">
-            
-        </div>
+            <div id="player5" class="gambler">
+                
+            </div>
 
-        <div id="player5" class="gambler">
-            
-        </div>
+            <div id="player6" class="gambler">
+                
+            </div>
 
-        <div id="player6" class="gambler">
-            
-        </div>
+            <div id="player7" class="gambler">
 
-        <div id="player7" class="gambler">
-            
+            </div>
+     
         </div>
 
         <div id="buttons">
-            <button id="reset">Reset Game</button>
-            <button id="turn">Turn</button>
-            <button id="mainmenu">Main Menu</button>
+            <button id="reset" hidden>Reset Game</button>
+            <button id="turn" hidden>Turn</button>
+            <button id="goto-main" hidden>Main Menu</button>
         </div>
         
         <script src="./js/app.js" async defer></script>
