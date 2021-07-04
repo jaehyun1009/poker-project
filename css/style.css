@@ -1,7 +1,9 @@
 @import url('https://fonts.googleapis.com/css2?family=Marcellus&display=swap');
 
 body {
+
     font-family: 'Marcellus', sans-serif;
+
 }
 
 #main-menu {
@@ -23,6 +25,7 @@ body {
 
     width: 296px;
     height: 222px;
+    mix-blend-mode: multiply;
 
 }
 
@@ -138,7 +141,7 @@ button:hover:not([disabled]) {
 
 .hand {
 
-    margin: 10px;
+    margin: 5px;
     display: flex;
     flex-direction: row;
     justify-content: space-evenly;
@@ -147,7 +150,7 @@ button:hover:not([disabled]) {
 
 .gambler > p {
 
-    margin: 10px;
+    margin: 0 2px;
     font-size: 18px;
     font-family: 'Marcellus', sans-serif;
 
@@ -160,6 +163,19 @@ button:hover:not([disabled]) {
     width: 180px;
     height: 200px;
     position: absolute;
+
+}
+
+.name {
+
+    text-align: center;
+    font-weight: bold;
+
+}
+
+.hand-rank{
+
+    text-align: center;
 
 }
 
