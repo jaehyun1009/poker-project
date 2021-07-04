@@ -64,14 +64,17 @@ class Card{
     DOM Elements
 
 */
+// Main Menu Buttons
 const mainMenuEl = document.getElementById(`main-menu`)
 const startGameEl = document.getElementById(`start-game`)
 
+// Game Buttons
 const buttonEls = document.querySelectorAll(`#buttons > button`)
 const turnButtonEl = document.getElementById(`turn`)
 const mainMenuButtonEl = document.getElementById(`goto-main`)
 const resetButtonEl = document.getElementById(`reset`)
 
+// Table Elements
 const tableEl = document.getElementById(`table`)
 const tableCard0El = document.getElementById(`table-card-0`)
 const tableCard1El = document.getElementById(`table-card-1`)
@@ -79,16 +82,28 @@ const tableCard2El = document.getElementById(`table-card-2`)
 const tableCard3El = document.getElementById(`table-card-3`)
 const tableCard4El = document.getElementById(`table-card-4`)
 
+// Player Elements
+const pl0cd1El = document.getElementById(`pl0-cd1`)
+const pl0cd2El = document.getElementById(`pl0-cd2`)
+
 /*
 
     Variables
     deck: array representing 52 cards (deck)
+    tableCards: cards displayed on the table
+    stage: determines how many cards are to be shown in the table
+    players: list of player objects that each consist of the following:
+        money: amount of money a player has
+        bet: amount of money a player bet on a turn
+        blind: blind status (big blind, small blind, or button)
+        cards: cards that a player is holding in his or her hand
+        bestHand: 
     
 */
 let deck = []
 let tableCards = []
 let stage = 0
-let players = [{money: null, bet: null, cards: null, bestHand: null}]
+let players = [{money: null, blind: null, bet: null, card1: null, card2: null, bestHand: null}]
 
 /*
 
@@ -213,6 +228,9 @@ function resetTable(){
     tableCards = []
     stage = 0
 
+    players[0].card1 = deck.pop()
+    players[0].card2 = deck.pop()
+
 }
 
 //
@@ -245,8 +263,6 @@ function render(){
 
     }
 
-    console.log(stage)
-
     if (stage == 0){
         turnButtonEl.innerText = `Flop`
         resetButtonEl.disabled = true
@@ -270,6 +286,9 @@ function render(){
         turnButtonEl.innerText = `Reset`
         resetButtonEl.disabled = true
     }
+
+    pl0cd1El.innerHTML = `<img width="60" height="90" src="./img/cards/${players[0].card1.rank}_${players[0].card1.suit}.png" alt="Table card slot 1">`
+    pl0cd2El.innerHTML = `<img width="60" height="90" src="./img/cards/${players[0].card2.rank}_${players[0].card2.suit}.png" alt="Table card slot 1">`
 
 }
 
