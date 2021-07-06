@@ -178,7 +178,7 @@ turnButtonEl.addEventListener(`click`, function(){
             break
 
         case 2:
-            stage = 3
+            numberOfPlayers == 1 ? stage = 4 : stage = 3
             deck.pop()
             tableCards.push(deck.pop())
             break
@@ -187,7 +187,7 @@ turnButtonEl.addEventListener(`click`, function(){
             stage = 4
             break
 
-        default: // case 3
+        default: // case 4
             stage = 0
             resetTable()
             break
@@ -487,18 +487,10 @@ const findHandRanks = () => players.forEach(obj => findHandRank(obj))
 
 */
 // Strategy: See if there are any rank values greater than 3 (4 cards of same rank). If so, return true. If not, return false.
-function isFourOfAKind(ranks){
-
-    return Object.values(ranks).some(numRanks => numRanks == 4)
-
-}
+isFourOfAKind = (ranks) => Object.values(ranks).some(numRanks => numRanks == 4)
 
 // Strategy: See if there are any suit values greater than 4 (more than 4 cards of same suit). If so, return true. If not, return false.
-function isFlush(suits){
-
-    return Object.values(suits).some(numSuits => numSuits > 4)
-
-}
+isFlush = (suits) => Object.values(suits).some(numSuits => numSuits > 4)
 
 // Checks to see if the 7 card hand is straight.
 // Returns the highest value in a straight. 0 (false) if it's not.
@@ -583,40 +575,20 @@ function isStraightFlush(hand){
 }
 
 // Sees if the highest straight flush hand is an ace.
-function isRoyalFlush(hand, rank){
-
-    return isStraightFlush(hand, rank) == Rank.ACE
-
-}
+isRoyalFlush = (hand, rank) => isStraightFlush(hand, rank) == Rank.ACE
 
 // Strategy: See if there are any rank values greater than 2 (more than 2 cards of same rank). If so, return true. If not, return false.
-function isThreeOfAKind(ranks){
-
-    return Object.values(ranks).some(numRanks => numRanks > 2)
-
-}
+isThreeOfAKind = (ranks) => Object.values(ranks).some(numRanks => numRanks > 2)
 
 // Strategy: Filter the rank object array into a single array that contains rank values greater than 1.
 // If that array's length is greater than 1 (there are more than 1 pairs), return true. Otherwise returns false.
-function isTwoPairs(ranks){
-
-    return Object.values(ranks).filter(numRanks => numRanks > 1).length > 1
-
-}
+isTwoPairs = (ranks) => Object.values(ranks).filter(numRanks => numRanks > 1).length > 1
 
 // Strategy: Check if there's three of a kind AND there are two or more pairs.
-function isFullHouse(ranks){
-
-    return isThreeOfAKind(ranks) && isTwoPairs(ranks)
-
-}
+isFullHouse = (ranks) => isThreeOfAKind(ranks) && isTwoPairs(ranks)
 
 // Strategy: See if there are any rank values greater than 1 (more than 1 card of same rank). If so, return true. If not, return false.
-function isPair(ranks){
-
-    return Object.values(ranks).some(numRanks => numRanks > 1)
-
-}
+isPair = (ranks) => Object.values(ranks).some(numRanks => numRanks > 1)
 
 // Initialization
 init()
