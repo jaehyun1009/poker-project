@@ -122,7 +122,6 @@ const pl0cd2El = document.getElementById(`pl0-cd2`)
 let deck = []
 let tableCards = []
 let stage = 0
-let numberOfPlayers
 let players = [
     {
         name: 'Hero',
@@ -131,7 +130,7 @@ let players = [
         bet: null,
         card1: null,
         card2: null,
-        handRank: null
+        handRank: null,
     }
 ]
 
@@ -318,14 +317,20 @@ function render(){
     }
 
     if (stage > 2){ // river
+
         tableCard4El.innerHTML = `<img width="60" height="90" src="./img/cards/${tableCards[4].rank}_${tableCards[4].suit}.png" alt="Table card slot 5">`
         turnButtonEl.innerText = `Reset`
         foldButtonEl.disabled = true
+
+        // findHandRanks()
+
     }
 
     // Render player hands
     pl0cd1El.innerHTML = `<img width="60" height="90" src="./img/cards/${players[0].card1.rank}_${players[0].card1.suit}.png" alt="Table card slot 1">`
     pl0cd2El.innerHTML = `<img width="60" height="90" src="./img/cards/${players[0].card2.rank}_${players[0].card2.suit}.png" alt="Table card slot 1">`
+
+    document.querySelector(`#player0 > .hand-rank`).innerText = players[0].handRank
 
 }
 
@@ -334,25 +339,159 @@ init()
 // Determines hand rank. Called after all cards are turned over
 function findHandRank(obj){
 
-    console.log(obj.card1)
-    console.log(obj.card2)
+    // create array of 7 cards for the table and hand to be ranked
+    let hand = tableCards.slice(0)
+    hand.push(obj.card1)
+    hand.push(obj.card2)
+
+    const suitCount = hand.reduce(
+        function(suits, card){
+
+            suits[card.suit]++
+            return suits
+
+        }, 
+        {
+
+            1: 0,
+            2: 0,
+            3: 0,
+            4: 0
+    
+        })
+
+    const rankCount = hand.reduce(
+        function(ranks, card){
+    
+            ranks[card.rank]++
+            return ranks
+    
+        }, 
+        {
+    
+            1: 0,
+            2: 0,
+            3: 0,
+            4: 0,
+            5: 0,
+            6: 0,
+            7: 0,
+            8: 0,
+            9: 0,
+            10: 0,
+            11: 0,
+            12: 0,
+            13: 0
+        
+        })
 
 }
 
-function findHandRanks(){
-
-    players.forEach(function(obj){
-
-        findHandRank(obj)
-
-    })
-
-}
+// Executes findHandRank function on each player
+const findHandRanks = () => players.forEach(obj => findHandRank(obj))
 
 /*
 
     Helper functions for findHandRank
 
 */
+// special case: hand has straights from 10 to ace, and is flush.
+function isRoyalFlush(suits, ranks){
 
-findHandRanks()
+    return ranks[Rank.TEN] > 0 && ranks[Rank.JACK] > 0 && ranks[Rank.QUEEN] > 0
+        && ranks[Rank.KING] > 0 && ranks[Rank.ACE] > 0 && isFlush(suits)
+
+}
+
+function isFourOfAKind(ranks){
+
+    return Object.values(ranks).some(numRanks => numRanks == 4)
+
+}
+
+function isFullHouse(ranks){
+
+    const numPairs = Object.values(ranks).filter(numRanks => numRanks > 1).length
+    return isThreeOfAKind(ranks) && (numPairs > 1)
+
+}
+
+function isThreeOfAKind(ranks){
+
+    return Object.values(ranks).some(numRanks => numRanks > 2)
+
+}
+
+function isFlush(suits){
+
+    return Object.values(suits).some(numSuits => numSuits > 4)
+
+}
+
+function isStraight(ranks){
+
+    if (ranks[Rank.ACE] > 0 && ranks[Rank.TWO] > 0 && ranks[Rank.THREE] > 0
+        && ranks[Rank.FOUR] > 0 && ranks[Rank.FIVE] > 0){
+            return true
+    }
+
+    if (ranks[Rank.TWO] > 0 && ranks[Rank.THREE] > 0 && ranks[Rank.FOUR] > 0
+        && ranks[Rank.FIVE] > 0 && ranks[Rank.SIX] > 0){
+            return true
+    }
+
+    if (ranks[Rank.THREE] > 0 && ranks[Rank.FOUR] > 0 && ranks[Rank.FIVE] > 0
+        && ranks[Rank.SIX] > 0 && ranks[Rank.SEVEN] > 0){
+            return true
+    }
+
+    if (ranks[Rank.FOUR] > 0 && ranks[Rank.FIVE] > 0 && ranks[Rank.SIX] > 0
+        && ranks[Rank.SEVEN] > 0 && ranks[Rank.EIGHT] > 0){
+            return true
+    }
+
+    if (ranks[Rank.FIVE] > 0 && ranks[Rank.SIX] > 0 && ranks[Rank.SEVEN] > 0
+        && ranks[Rank.EIGHT] > 0 && ranks[Rank.NINE] > 0){
+            return true
+    }
+
+    if (ranks[Rank.SIX] > 0 && ranks[Rank.SEVEN] > 0 && ranks[Rank.EIGHT] > 0
+        && ranks[Rank.NINE] > 0 && ranks[Rank.TEN] > 0){
+            return true
+    }
+
+    if (ranks[Rank.SEVEN] > 0 && ranks[Rank.EIGHT] > 0 && ranks[Rank.NINE] > 0
+        && ranks[Rank.TEN] > 0 && ranks[Rank.JACK] > 0){
+            return true
+    }
+
+    if (ranks[Rank.EIGHT] > 0 && ranks[Rank.NINE] > 0 && ranks[Rank.TEN] > 0
+        && ranks[Rank.JACK] > 0 && ranks[Rank.QUEEN] > 0){
+            return true
+    }
+
+    if (ranks[Rank.NINE] > 0 && ranks[Rank.TEN] > 0 && ranks[Rank.JACK] > 0
+        && ranks[Rank.QUEEN] > 0 && ranks[Rank.KING] > 0){
+            return true
+    }
+
+    if (ranks[Rank.TEN] > 0 && ranks[Rank.JACK] > 0 && ranks[Rank.QUEEN] > 0
+        && ranks[Rank.KING] > 0 && ranks[Rank.ACE] > 0){
+            return true
+    }
+
+    return false
+
+}
+
+function isTwoPairs(ranks){
+
+    return Object.values(ranks).filter(numRanks => numRanks > 1).length > 1
+
+}
+
+function isPair(ranks){
+
+    return Object.values(ranks).some(numRanks => numRanks > 1)
+
+}
