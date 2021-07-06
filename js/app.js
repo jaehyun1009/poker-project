@@ -183,6 +183,10 @@ turnButtonEl.addEventListener(`click`, function(){
             tableCards.push(deck.pop())
             break
 
+        case 3:
+            stage = 4
+            break
+
         default: // case 3
             stage = 0
             resetTable()
@@ -363,9 +367,14 @@ function render(){
     if (stage > 2){ // river
 
         tableCard4El.innerHTML = `<img width="60" height="90" src="./img/cards/${tableCards[4].rank}_${tableCards[4].suit}.png" alt="Table card slot 5">`
-        turnButtonEl.innerText = `Reset`
-        foldButtonEl.disabled = true
+        turnButtonEl.innerText = `Reveal`
 
+    }
+
+    if (stage > 3){ // reveal
+
+        foldButtonEl.disabled = true
+        turnButtonEl.innerText = `Reset`
         findHandRanks()
 
     }
@@ -373,7 +382,7 @@ function render(){
     // Render player hands
     for (let i=0; i<numberOfPlayers; i++){
         
-        if (stage < 3 && i > 0){
+        if (stage < 4 && i > 0){
             document.getElementById(`pl${i}-cd1`).innerHTML = `<img width="60" height="90" src="./img/cards/back.png" alt="Table card slot 1">`
             document.getElementById(`pl${i}-cd2`).innerHTML = `<img width="60" height="90" src="./img/cards/back.png" alt="Table card slot 1">`
         }
