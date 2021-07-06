@@ -68,6 +68,7 @@ class Card{
 // Main Menu Buttons
 const mainMenuEl = document.getElementById(`main-menu`)
 const startGameEl = document.getElementById(`start-game`)
+const playerNumberEl = document.querySelector(`select`)
 
 // Game Buttons
 const buttonEls = document.querySelectorAll(`#buttons > button`)
@@ -84,8 +85,13 @@ const tableCard3El = document.getElementById(`table-card-3`)
 const tableCard4El = document.getElementById(`table-card-4`)
 
 // Player Elements
-const pl0cd1El = document.getElementById(`pl0-cd1`)
-const pl0cd2El = document.getElementById(`pl0-cd2`)
+const player1El = document.getElementById(`player1`)
+const player2El = document.getElementById(`player2`)
+const player3El = document.getElementById(`player3`)
+const player4El = document.getElementById(`player4`)
+const player5El = document.getElementById(`player5`)
+const player6El = document.getElementById(`player6`)
+const player7El = document.getElementById(`player7`)
 
 /*
 
@@ -105,6 +111,7 @@ const pl0cd2El = document.getElementById(`pl0-cd2`)
 let deck = []
 let tableCards = []
 let stage = 0
+let numberOfPlayers
 let players = [
     {
         name: 'Hero',
@@ -131,6 +138,23 @@ mainMenuButtonEl.addEventListener(`click`, function(){
 
 startGameEl.addEventListener(`click`, function(){
 
+    numberOfPlayers = playerNumberEl.value
+
+    for (let i=1; i<numberOfPlayers; i++){
+        players.push(
+            {
+                name: `Villain ${i}`,
+                money: null,
+                blind: null,
+                bet: null,
+                card1: null,
+                card2: null,
+                handRank: null,
+            }
+        )
+    }
+
+    resetTable()
     render()
 
 })
@@ -203,6 +227,31 @@ function newDeck(){
 
 // Uses Fisher-Yates algorithm to shuffle, then the deck is split and rejoined,
 // Do this process many times to get a good shuffle, like a human would divide the deck many times to shuffle.
+// Initializes game and shows beginning game screen
+function init(){
+
+    // Initial state. Show main menu and hide game state.
+    mainMenuEl.hidden = false
+
+    tableEl.hidden = true
+    for (const buttonEl of buttonEls){
+
+        buttonEl.hidden = true
+
+    }
+
+    // reset all players other than you
+    players.length = 1
+    player1El.hidden = true
+    player2El.hidden = true
+    player3El.hidden = true
+    player4El.hidden = true
+    player5El.hidden = true
+    player6El.hidden = true
+    player7El.hidden = true
+
+}
+
 function shuffle(){
 
     let randomTimes = 10
@@ -244,29 +293,16 @@ function resetTable(){
     tableCards = []
     stage = 0
 
-    // assign fresh hand to each player
-    players[0].card1 = deck.pop()
-    players[0].card2 = deck.pop()
+    for (let i=0; i<numberOfPlayers; i++){
 
-    // reset hand rank of each player
-    players[0].handRank = ``
+        // assign fresh hand to each player
+        players[i].card1 = deck.pop()
+        players[i].card2 = deck.pop()
 
-}
-
-// Initializes game and shows beginning game screen
-function init(){
-
-    // Initial state. Show main menu and hide game state.
-    mainMenuEl.hidden = false
-
-    tableEl.hidden = true
-    for (const buttonEl of buttonEls){
-
-        buttonEl.hidden = true
+        // reset hand rank of each player
+        players[i].handRank = ``
 
     }
-
-    resetTable()
 
 }
 
@@ -313,14 +349,60 @@ function render(){
     }
 
     // Render player hands
-    pl0cd1El.innerHTML = `<img width="60" height="90" src="./img/cards/${players[0].card1.rank}_${players[0].card1.suit}.png" alt="Table card slot 1">`
-    pl0cd2El.innerHTML = `<img width="60" height="90" src="./img/cards/${players[0].card2.rank}_${players[0].card2.suit}.png" alt="Table card slot 1">`
-
+    document.getElementById(`pl0-cd1`).innerHTML = `<img width="60" height="90" src="./img/cards/${players[0].card1.rank}_${players[0].card1.suit}.png" alt="Table card slot 1">`
+    document.getElementById(`pl0-cd2`).innerHTML = `<img width="60" height="90" src="./img/cards/${players[0].card2.rank}_${players[0].card2.suit}.png" alt="Table card slot 1">`
     document.querySelector(`#player0 > .hand-rank`).innerText = players[0].handRank
 
-}
+    if (numberOfPlayers > 1){
+        player1.hidden = false
+        document.getElementById(`pl1-cd1`).innerHTML = `<img width="60" height="90" src="./img/cards/${players[1].card1.rank}_${players[1].card1.suit}.png" alt="Table card slot 2">`
+        document.getElementById(`pl1-cd2`).innerHTML = `<img width="60" height="90" src="./img/cards/${players[1].card2.rank}_${players[1].card2.suit}.png" alt="Table card slot 2">`
+        document.querySelector(`#player1 > .hand-rank`).innerText = players[1].handRank
+    }
 
-init()
+    if (numberOfPlayers > 2){
+        player2.hidden = false
+        document.getElementById(`pl2-cd1`).innerHTML = `<img width="60" height="90" src="./img/cards/${players[2].card1.rank}_${players[2].card1.suit}.png" alt="Table card slot 3">`
+        document.getElementById(`pl2-cd2`).innerHTML = `<img width="60" height="90" src="./img/cards/${players[2].card2.rank}_${players[2].card2.suit}.png" alt="Table card slot 3">`
+        document.querySelector(`#player2 > .hand-rank`).innerText = players[2].handRank
+    }
+
+    if (numberOfPlayers > 3){
+        player3.hidden = false
+        document.getElementById(`pl3-cd1`).innerHTML = `<img width="60" height="90" src="./img/cards/${players[3].card1.rank}_${players[3].card1.suit}.png" alt="Table card slot 4">`
+        document.getElementById(`pl3-cd2`).innerHTML = `<img width="60" height="90" src="./img/cards/${players[3].card2.rank}_${players[3].card2.suit}.png" alt="Table card slot 4">`
+        document.querySelector(`#player3 > .hand-rank`).innerText = players[3].handRank
+    }
+
+    if (numberOfPlayers > 4){
+        player4.hidden = false
+        document.getElementById(`pl4-cd1`).innerHTML = `<img width="60" height="90" src="./img/cards/${players[4].card1.rank}_${players[4].card1.suit}.png" alt="Table card slot 5">`
+        document.getElementById(`pl4-cd2`).innerHTML = `<img width="60" height="90" src="./img/cards/${players[4].card2.rank}_${players[4].card2.suit}.png" alt="Table card slot 5">`
+        document.querySelector(`#player4 > .hand-rank`).innerText = players[4].handRank
+    }
+
+    if (numberOfPlayers > 5){
+        player5.hidden = false
+        document.getElementById(`pl5-cd1`).innerHTML = `<img width="60" height="90" src="./img/cards/${players[5].card1.rank}_${players[5].card1.suit}.png" alt="Table card slot 6">`
+        document.getElementById(`pl5-cd2`).innerHTML = `<img width="60" height="90" src="./img/cards/${players[5].card2.rank}_${players[5].card2.suit}.png" alt="Table card slot 6">`
+        document.querySelector(`#player5 > .hand-rank`).innerText = players[5].handRank
+    }
+
+    if (numberOfPlayers > 6){
+        player6.hidden = false
+        document.getElementById(`pl6-cd1`).innerHTML = `<img width="60" height="90" src="./img/cards/${players[6].card1.rank}_${players[6].card1.suit}.png" alt="Table card slot 7">`
+        document.getElementById(`pl6-cd2`).innerHTML = `<img width="60" height="90" src="./img/cards/${players[6].card2.rank}_${players[6].card2.suit}.png" alt="Table card slot 7">`
+        document.querySelector(`#player6 > .hand-rank`).innerText = players[6].handRank
+    }
+
+    if (numberOfPlayers > 7){
+        player7.hidden = false
+        document.getElementById(`pl7-cd1`).innerHTML = `<img width="60" height="90" src="./img/cards/${players[7].card1.rank}_${players[7].card1.suit}.png" alt="Table card slot 8">`
+        document.getElementById(`pl7-cd2`).innerHTML = `<img width="60" height="90" src="./img/cards/${players[7].card2.rank}_${players[7].card2.suit}.png" alt="Table card slot 8">`
+        document.querySelector(`#player7 > .hand-rank`).innerText = players[7].handRank
+    }
+
+}
 
 // Determines hand rank. Called after all cards are turned over
 function findHandRank(obj){
@@ -544,3 +626,6 @@ function isPair(ranks){
     return Object.values(ranks).some(numRanks => numRanks > 1)
 
 }
+
+// Initialization
+init()
