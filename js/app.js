@@ -35,26 +35,9 @@ const Rank = {
 
 }
 
-// representation of hand ranks in numbers. Greater the number, better the hand.
-const handRanks = {
-
-    ROYAL_FLUSH: 10,
-    STRAIGHT_FLUSH: 9,
-    FOUR_OF_A_KIND: 8,
-    FULL_HOUSE: 7,
-    FLUSH: 6,
-    STRAIGHT: 5,
-    THREE_OF_A_KIND: 4,
-    TWO_PAIR: 3,
-    ONE_PAIR: 2,
-    HIGH_CARD: 1
-
-}
-
 // Make the Suit and Rank objects immutable
 Object.freeze(Suit)
 Object.freeze(Rank)
-Object.freeze(handRanks)
 
 // Card class is represented by suit and rank constant that represents a playing card
 class Card{
@@ -265,6 +248,9 @@ function resetTable(){
     players[0].card1 = deck.pop()
     players[0].card2 = deck.pop()
 
+    // reset hand rank of each player
+    players[0].handRank = ``
+
 }
 
 // Initializes game and shows beginning game screen
@@ -322,7 +308,7 @@ function render(){
         turnButtonEl.innerText = `Reset`
         foldButtonEl.disabled = true
 
-        // findHandRanks()
+        findHandRanks()
 
     }
 
@@ -340,7 +326,7 @@ init()
 function findHandRank(obj){
 
     // create array of 7 cards for the table and hand to be ranked
-    let hand = tableCards.slice(0)
+    const hand = tableCards.slice(0)
     hand.push(obj.card1)
     hand.push(obj.card2)
 
@@ -385,6 +371,36 @@ function findHandRank(obj){
         
         })
 
+    if (isRoyalFlush(hand, rankCount))
+        obj.handRank = `Royal Flush`
+    
+    else if (isStraightFlush(hand))
+        obj.handRank = `Straight Flush`
+
+    else if (isFourOfAKind(rankCount))
+        obj.handRank = `Four of a Kind`
+
+    else if (isFullHouse(rankCount))
+        obj.handRank = `Full House`
+
+    else if (isFlush(suitCount))
+        obj.handRank = `Flush`
+
+    else if (isStraight(rankCount))
+        obj.handRank = `Straight`
+
+    else if (isThreeOfAKind(rankCount))
+        obj.handRank = `Three of a Kind`
+
+    else if (isTwoPairs(rankCount))
+        obj.handRank = `Two Pairs`
+
+    else if (isPair(rankCount))
+        obj.handRank = `One Pair`
+
+    else // high card
+        obj.handRank = `High Card`
+
 }
 
 // Executes findHandRank function on each player
@@ -396,13 +412,6 @@ const findHandRanks = () => players.forEach(obj => findHandRank(obj))
 
 */
 // special case: hand has straights from 10 to ace, and is flush.
-function isRoyalFlush(suits, ranks){
-
-    return ranks[Rank.TEN] > 0 && ranks[Rank.JACK] > 0 && ranks[Rank.QUEEN] > 0
-        && ranks[Rank.KING] > 0 && ranks[Rank.ACE] > 0 && isFlush(suits)
-
-}
-
 function isFourOfAKind(ranks){
 
     return Object.values(ranks).some(numRanks => numRanks == 4)
@@ -416,12 +425,6 @@ function isFullHouse(ranks){
 
 }
 
-function isThreeOfAKind(ranks){
-
-    return Object.values(ranks).some(numRanks => numRanks > 2)
-
-}
-
 function isFlush(suits){
 
     return Object.values(suits).some(numSuits => numSuits > 4)
@@ -432,55 +435,97 @@ function isStraight(ranks){
 
     if (ranks[Rank.ACE] > 0 && ranks[Rank.TWO] > 0 && ranks[Rank.THREE] > 0
         && ranks[Rank.FOUR] > 0 && ranks[Rank.FIVE] > 0){
-            return true
+            return Rank.FIVE
     }
 
     if (ranks[Rank.TWO] > 0 && ranks[Rank.THREE] > 0 && ranks[Rank.FOUR] > 0
         && ranks[Rank.FIVE] > 0 && ranks[Rank.SIX] > 0){
-            return true
+            return Rank.SIX
     }
 
     if (ranks[Rank.THREE] > 0 && ranks[Rank.FOUR] > 0 && ranks[Rank.FIVE] > 0
         && ranks[Rank.SIX] > 0 && ranks[Rank.SEVEN] > 0){
-            return true
+            return Rank.SEVEN
     }
 
     if (ranks[Rank.FOUR] > 0 && ranks[Rank.FIVE] > 0 && ranks[Rank.SIX] > 0
         && ranks[Rank.SEVEN] > 0 && ranks[Rank.EIGHT] > 0){
-            return true
+            return Rank.EIGHT
     }
 
     if (ranks[Rank.FIVE] > 0 && ranks[Rank.SIX] > 0 && ranks[Rank.SEVEN] > 0
         && ranks[Rank.EIGHT] > 0 && ranks[Rank.NINE] > 0){
-            return true
+            return Rank.NINE
     }
 
     if (ranks[Rank.SIX] > 0 && ranks[Rank.SEVEN] > 0 && ranks[Rank.EIGHT] > 0
         && ranks[Rank.NINE] > 0 && ranks[Rank.TEN] > 0){
-            return true
+            return Rank.TEN
     }
 
     if (ranks[Rank.SEVEN] > 0 && ranks[Rank.EIGHT] > 0 && ranks[Rank.NINE] > 0
         && ranks[Rank.TEN] > 0 && ranks[Rank.JACK] > 0){
-            return true
+            return Rank.JACK
     }
 
     if (ranks[Rank.EIGHT] > 0 && ranks[Rank.NINE] > 0 && ranks[Rank.TEN] > 0
         && ranks[Rank.JACK] > 0 && ranks[Rank.QUEEN] > 0){
-            return true
+            return Rank.QUEEN
     }
 
     if (ranks[Rank.NINE] > 0 && ranks[Rank.TEN] > 0 && ranks[Rank.JACK] > 0
         && ranks[Rank.QUEEN] > 0 && ranks[Rank.KING] > 0){
-            return true
+            return Rank.KING
     }
 
     if (ranks[Rank.TEN] > 0 && ranks[Rank.JACK] > 0 && ranks[Rank.QUEEN] > 0
         && ranks[Rank.KING] > 0 && ranks[Rank.ACE] > 0){
+            return Rank.ACE
+    }
+
+    return 0 // false
+
+}
+
+function isStraightFlush(hand){
+
+    const handNumVals = hand.map(obj => ((obj.suit - 1) * Object.values(Rank).length) + obj.rank)
+    
+    handNumVals.sort(function(a, b){
+
+        if (a < b)
+            return -1
+        else if (a > b)
+            return 1
+        else
+            return 0
+
+    })
+
+    for (let i=0; i<3; i++){
+
+        if (handNumVals.includes(handNumVals[i] + 1) &&
+            handNumVals.includes(handNumVals[i] + 2) &&
+            handNumVals.includes(handNumVals[i] + 3) &&
+            (handNumVals.includes(handNumVals[i] + 4) || 
+            handNumVals.includes(handNumVals[i] - 9)))
             return true
+
     }
 
     return false
+
+}
+
+function isRoyalFlush(hand, ranks){
+
+    return isStraightFlush(hand) && (isStraight(ranks) == Rank.ACE)
+
+}
+
+function isThreeOfAKind(ranks){
+
+    return Object.values(ranks).some(numRanks => numRanks > 2)
 
 }
 
