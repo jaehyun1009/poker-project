@@ -111,7 +111,7 @@ const player7El = document.getElementById(`player7`)
 let deck = []
 let tableCards = []
 let stage = 0
-let numberOfPlayers
+let numberOfPlayers = 1
 let players = [
     {
         name: 'Hero',

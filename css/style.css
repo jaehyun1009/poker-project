@@ -87,7 +87,7 @@ button {
 
 button:hover:not([disabled]) {
 
-    color: red;
+    color: crimson;
 
 }
 
