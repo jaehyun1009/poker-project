@@ -452,7 +452,7 @@ function findHandRank(obj){
     else if (isFlush(suitCount))
         obj.handRank = `Flush`
 
-    else if (isStraight(rankCount))
+    else if (isStraight(hand))
         obj.handRank = `Straight`
 
     else if (isThreeOfAKind(rankCount))
@@ -477,19 +477,14 @@ const findHandRanks = () => players.forEach(obj => findHandRank(obj))
     Helper functions for findHandRank
 
 */
+// Strategy: See if there are any rank values greater than 3 (4 cards of same rank). If so, return true. If not, return false.
 function isFourOfAKind(ranks){
 
     return Object.values(ranks).some(numRanks => numRanks == 4)
 
 }
 
-function isFullHouse(ranks){
-
-    const numPairs = Object.values(ranks).filter(numRanks => numRanks > 1).length
-    return isThreeOfAKind(ranks) && (numPairs > 1)
-
-}
-
+// Strategy: See if there are any suit values greater than 4 (more than 4 cards of same suit). If so, return true. If not, return false.
 function isFlush(suits){
 
     return Object.values(suits).some(numSuits => numSuits > 4)
@@ -498,56 +493,39 @@ function isFlush(suits){
 
 // Checks to see if the 7 card hand is straight.
 // Returns the highest value in a straight. 0 (false) if it's not.
-function isStraight(ranks){
+function isStraight(hand){
 
-    if (ranks[Rank.ACE] > 0 && ranks[Rank.TWO] > 0 && ranks[Rank.THREE] > 0
-        && ranks[Rank.FOUR] > 0 && ranks[Rank.FIVE] > 0){
-            return Rank.FIVE
-    }
+    // separate each suit by buffer number before comparing each other for adjacent numbers
+    const handNumVals = hand.map(obj => obj.rank)
 
-    if (ranks[Rank.TWO] > 0 && ranks[Rank.THREE] > 0 && ranks[Rank.FOUR] > 0
-        && ranks[Rank.FIVE] > 0 && ranks[Rank.SIX] > 0){
-            return Rank.SIX
-    }
+    // simple sorting function that sorts handNumVals by number
+    handNumVals.sort(function(a, b){
 
-    if (ranks[Rank.THREE] > 0 && ranks[Rank.FOUR] > 0 && ranks[Rank.FIVE] > 0
-        && ranks[Rank.SIX] > 0 && ranks[Rank.SEVEN] > 0){
-            return Rank.SEVEN
-    }
+        if (a < b)
+            return -1
+        else if (a > b)
+            return 1
+        else
+            return 0
 
-    if (ranks[Rank.FOUR] > 0 && ranks[Rank.FIVE] > 0 && ranks[Rank.SIX] > 0
-        && ranks[Rank.SEVEN] > 0 && ranks[Rank.EIGHT] > 0){
-            return Rank.EIGHT
-    }
+    })
 
-    if (ranks[Rank.FIVE] > 0 && ranks[Rank.SIX] > 0 && ranks[Rank.SEVEN] > 0
-        && ranks[Rank.EIGHT] > 0 && ranks[Rank.NINE] > 0){
-            return Rank.NINE
-    }
+    console.log(handNumVals)
 
-    if (ranks[Rank.SIX] > 0 && ranks[Rank.SEVEN] > 0 && ranks[Rank.EIGHT] > 0
-        && ranks[Rank.NINE] > 0 && ranks[Rank.TEN] > 0){
-            return Rank.TEN
-    }
+    // check each number to see if it contains hand numbers greater than it by 1, 2, 3, and 4 (or 9 checking for ace)
+    for (let i=0; i<4; i++){
 
-    if (ranks[Rank.SEVEN] > 0 && ranks[Rank.EIGHT] > 0 && ranks[Rank.NINE] > 0
-        && ranks[Rank.TEN] > 0 && ranks[Rank.JACK] > 0){
-            return Rank.JACK
-    }
+        if (handNumVals.includes(handNumVals[i] + 1) &&
+            handNumVals.includes(handNumVals[i] + 2) &&
+            handNumVals.includes(handNumVals[i] + 3)){
 
-    if (ranks[Rank.EIGHT] > 0 && ranks[Rank.NINE] > 0 && ranks[Rank.TEN] > 0
-        && ranks[Rank.JACK] > 0 && ranks[Rank.QUEEN] > 0){
-            return Rank.QUEEN
-    }
+            if (handNumVals.includes(handNumVals[i] + 4))
+                return handNumVals[i] + 4
+            else if (handNumVals.includes(handNumVals[i] - 9))
+                return Rank.ACE
 
-    if (ranks[Rank.NINE] > 0 && ranks[Rank.TEN] > 0 && ranks[Rank.JACK] > 0
-        && ranks[Rank.QUEEN] > 0 && ranks[Rank.KING] > 0){
-            return Rank.KING
-    }
+        }
 
-    if (ranks[Rank.TEN] > 0 && ranks[Rank.JACK] > 0 && ranks[Rank.QUEEN] > 0
-        && ranks[Rank.KING] > 0 && ranks[Rank.ACE] > 0){
-            return Rank.ACE
     }
 
     return 0 // false
@@ -591,7 +569,7 @@ function isStraightFlush(hand){
 
     }
 
-    return 0
+    return 0 // false
 
 }
 
@@ -602,18 +580,29 @@ function isRoyalFlush(hand, rank){
 
 }
 
+// Strategy: See if there are any rank values greater than 2 (more than 2 cards of same rank). If so, return true. If not, return false.
 function isThreeOfAKind(ranks){
 
     return Object.values(ranks).some(numRanks => numRanks > 2)
 
 }
 
+// Strategy: Filter the rank object array into a single array that contains rank values greater than 1.
+// If that array's length is greater than 1 (there are more than 1 pairs), return true. Otherwise returns false.
 function isTwoPairs(ranks){
 
     return Object.values(ranks).filter(numRanks => numRanks > 1).length > 1
 
 }
 
+// Strategy: Check if there's three of a kind AND there are two or more pairs.
+function isFullHouse(ranks){
+
+    return isThreeOfAKind(ranks) && isTwoPairs(ranks)
+
+}
+
+// Strategy: See if there are any rank values greater than 1 (more than 1 card of same rank). If so, return true. If not, return false.
 function isPair(ranks){
 
     return Object.values(ranks).some(numRanks => numRanks > 1)

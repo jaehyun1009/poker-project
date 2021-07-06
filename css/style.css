@@ -10,6 +10,12 @@ body {
 
     text-align: center;
     min-width: 800px;
+    padding: 0 0 35px 0;
+    position: absolute;
+    border-style: solid;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
 
 }
 
@@ -83,6 +89,12 @@ button:hover:not([disabled]) {
 
     color: red;
 
+}
+
+#goto-main {
+
+    transform: translate(-3%);
+    
 }
 
 #table {
