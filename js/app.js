@@ -374,7 +374,7 @@ function findHandRank(obj){
     if (isRoyalFlush(hand, rankCount))
         obj.handRank = `Royal Flush`
     
-    else if (isStraightFlush(hand))
+    else if (isStraightFlush(hand, rankCount))
         obj.handRank = `Straight Flush`
 
     else if (isFourOfAKind(rankCount))
@@ -411,7 +411,6 @@ const findHandRanks = () => players.forEach(obj => findHandRank(obj))
     Helper functions for findHandRank
 
 */
-// special case: hand has straights from 10 to ace, and is flush.
 function isFourOfAKind(ranks){
 
     return Object.values(ranks).some(numRanks => numRanks == 4)
@@ -487,10 +486,11 @@ function isStraight(ranks){
 
 }
 
-function isStraightFlush(hand){
+function isStraightFlush(hand, rank){
 
-    const handNumVals = hand.map(obj => ((obj.suit - 1) * Object.values(Rank).length) + obj.rank)
-    
+    let suitBuffer = 100
+    const handNumVals = hand.map(obj => ((obj.suit - 1) * suitBuffer) + obj.rank)
+
     handNumVals.sort(function(a, b){
 
         if (a < b)
@@ -502,24 +502,28 @@ function isStraightFlush(hand){
 
     })
 
-    for (let i=0; i<3; i++){
+    for (let i=0; i<4; i++){
 
         if (handNumVals.includes(handNumVals[i] + 1) &&
             handNumVals.includes(handNumVals[i] + 2) &&
-            handNumVals.includes(handNumVals[i] + 3) &&
-            (handNumVals.includes(handNumVals[i] + 4) || 
-            handNumVals.includes(handNumVals[i] - 9)))
-            return true
+            handNumVals.includes(handNumVals[i] + 3)){
+
+            if (handNumVals.includes(handNumVals[i] + 4))
+                return (handNumVals[i] + 4) % suitBuffer
+            else if (handNumVals.includes(handNumVals[i] - 9))
+                return Rank.ACE
+
+        }
 
     }
 
-    return false
+    return 0
 
 }
 
-function isRoyalFlush(hand, ranks){
+function isRoyalFlush(hand, rank){
 
-    return isStraightFlush(hand) && (isStraight(ranks) == Rank.ACE)
+    return isStraightFlush(hand, rank) == Rank.ACE
 
 }
 
