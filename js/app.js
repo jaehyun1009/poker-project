@@ -319,6 +319,28 @@ function render(){
 
     }
 
+    // Unhide player elements according to number of players you selected in the main menu
+    if (numberOfPlayers > 1)
+        player1.hidden = false
+
+    if (numberOfPlayers > 2)
+        player2.hidden = false
+
+    if (numberOfPlayers > 3)
+        player3.hidden = false
+
+    if (numberOfPlayers > 4)
+        player4.hidden = false
+
+    if (numberOfPlayers > 5)
+        player5.hidden = false
+
+    if (numberOfPlayers > 6)
+        player6.hidden = false
+
+    if (numberOfPlayers > 7)
+        player7.hidden = false
+
     // Fold button is enabled until all cards are shown
     foldButtonEl.disabled = false
 
@@ -349,57 +371,19 @@ function render(){
     }
 
     // Render player hands
-    document.getElementById(`pl0-cd1`).innerHTML = `<img width="60" height="90" src="./img/cards/${players[0].card1.rank}_${players[0].card1.suit}.png" alt="Table card slot 1">`
-    document.getElementById(`pl0-cd2`).innerHTML = `<img width="60" height="90" src="./img/cards/${players[0].card2.rank}_${players[0].card2.suit}.png" alt="Table card slot 1">`
-    document.querySelector(`#player0 > .hand-rank`).innerText = players[0].handRank
+    for (let i=0; i<numberOfPlayers; i++){
+        
+        if (stage < 3 && i > 0){
+            document.getElementById(`pl${i}-cd1`).innerHTML = `<img width="60" height="90" src="./img/cards/back.png" alt="Table card slot 1">`
+            document.getElementById(`pl${i}-cd2`).innerHTML = `<img width="60" height="90" src="./img/cards/back.png" alt="Table card slot 1">`
+        }
+        else {
+            document.getElementById(`pl${i}-cd1`).innerHTML = `<img width="60" height="90" src="./img/cards/${players[i].card1.rank}_${players[i].card1.suit}.png" alt="Table card slot ${i+1}">`
+            document.getElementById(`pl${i}-cd2`).innerHTML = `<img width="60" height="90" src="./img/cards/${players[i].card2.rank}_${players[i].card2.suit}.png" alt="Table card slot ${i+1}">`
+        }
 
-    if (numberOfPlayers > 1){
-        player1.hidden = false
-        document.getElementById(`pl1-cd1`).innerHTML = `<img width="60" height="90" src="./img/cards/${players[1].card1.rank}_${players[1].card1.suit}.png" alt="Table card slot 2">`
-        document.getElementById(`pl1-cd2`).innerHTML = `<img width="60" height="90" src="./img/cards/${players[1].card2.rank}_${players[1].card2.suit}.png" alt="Table card slot 2">`
-        document.querySelector(`#player1 > .hand-rank`).innerText = players[1].handRank
-    }
+        document.querySelector(`#player${i} > .hand-rank`).innerText = players[i].handRank
 
-    if (numberOfPlayers > 2){
-        player2.hidden = false
-        document.getElementById(`pl2-cd1`).innerHTML = `<img width="60" height="90" src="./img/cards/${players[2].card1.rank}_${players[2].card1.suit}.png" alt="Table card slot 3">`
-        document.getElementById(`pl2-cd2`).innerHTML = `<img width="60" height="90" src="./img/cards/${players[2].card2.rank}_${players[2].card2.suit}.png" alt="Table card slot 3">`
-        document.querySelector(`#player2 > .hand-rank`).innerText = players[2].handRank
-    }
-
-    if (numberOfPlayers > 3){
-        player3.hidden = false
-        document.getElementById(`pl3-cd1`).innerHTML = `<img width="60" height="90" src="./img/cards/${players[3].card1.rank}_${players[3].card1.suit}.png" alt="Table card slot 4">`
-        document.getElementById(`pl3-cd2`).innerHTML = `<img width="60" height="90" src="./img/cards/${players[3].card2.rank}_${players[3].card2.suit}.png" alt="Table card slot 4">`
-        document.querySelector(`#player3 > .hand-rank`).innerText = players[3].handRank
-    }
-
-    if (numberOfPlayers > 4){
-        player4.hidden = false
-        document.getElementById(`pl4-cd1`).innerHTML = `<img width="60" height="90" src="./img/cards/${players[4].card1.rank}_${players[4].card1.suit}.png" alt="Table card slot 5">`
-        document.getElementById(`pl4-cd2`).innerHTML = `<img width="60" height="90" src="./img/cards/${players[4].card2.rank}_${players[4].card2.suit}.png" alt="Table card slot 5">`
-        document.querySelector(`#player4 > .hand-rank`).innerText = players[4].handRank
-    }
-
-    if (numberOfPlayers > 5){
-        player5.hidden = false
-        document.getElementById(`pl5-cd1`).innerHTML = `<img width="60" height="90" src="./img/cards/${players[5].card1.rank}_${players[5].card1.suit}.png" alt="Table card slot 6">`
-        document.getElementById(`pl5-cd2`).innerHTML = `<img width="60" height="90" src="./img/cards/${players[5].card2.rank}_${players[5].card2.suit}.png" alt="Table card slot 6">`
-        document.querySelector(`#player5 > .hand-rank`).innerText = players[5].handRank
-    }
-
-    if (numberOfPlayers > 6){
-        player6.hidden = false
-        document.getElementById(`pl6-cd1`).innerHTML = `<img width="60" height="90" src="./img/cards/${players[6].card1.rank}_${players[6].card1.suit}.png" alt="Table card slot 7">`
-        document.getElementById(`pl6-cd2`).innerHTML = `<img width="60" height="90" src="./img/cards/${players[6].card2.rank}_${players[6].card2.suit}.png" alt="Table card slot 7">`
-        document.querySelector(`#player6 > .hand-rank`).innerText = players[6].handRank
-    }
-
-    if (numberOfPlayers > 7){
-        player7.hidden = false
-        document.getElementById(`pl7-cd1`).innerHTML = `<img width="60" height="90" src="./img/cards/${players[7].card1.rank}_${players[7].card1.suit}.png" alt="Table card slot 8">`
-        document.getElementById(`pl7-cd2`).innerHTML = `<img width="60" height="90" src="./img/cards/${players[7].card2.rank}_${players[7].card2.suit}.png" alt="Table card slot 8">`
-        document.querySelector(`#player7 > .hand-rank`).innerText = players[7].handRank
     }
 
 }
@@ -512,6 +496,8 @@ function isFlush(suits){
 
 }
 
+// Checks to see if the 7 card hand is straight.
+// Returns the highest value in a straight. 0 (false) if it's not.
 function isStraight(ranks){
 
     if (ranks[Rank.ACE] > 0 && ranks[Rank.TWO] > 0 && ranks[Rank.THREE] > 0
@@ -568,11 +554,16 @@ function isStraight(ranks){
 
 }
 
-function isStraightFlush(hand, rank){
+// Checks to see if the 7-card hand is a straight flush.
+// Originally tried to go for the isFlush and isStraight route, but there are edge cases where it would falsely display straight flush in cases where it wasn't.
+// Returns value of the highest number in a straight. 0 (false) if it's not straight and not flush.
+function isStraightFlush(hand){
 
+    // separate each suit by buffer number before comparing each other for adjacent numbers
     let suitBuffer = 100
     const handNumVals = hand.map(obj => ((obj.suit - 1) * suitBuffer) + obj.rank)
 
+    // simple sorting function that sorts handNumVals by number
     handNumVals.sort(function(a, b){
 
         if (a < b)
@@ -584,6 +575,7 @@ function isStraightFlush(hand, rank){
 
     })
 
+    // check each number to see if it contains hand numbers greater than it by 1, 2, 3, and 4 (or 9 checking for ace)
     for (let i=0; i<4; i++){
 
         if (handNumVals.includes(handNumVals[i] + 1) &&
@@ -603,6 +595,7 @@ function isStraightFlush(hand, rank){
 
 }
 
+// Sees if the highest straight flush hand is an ace.
 function isRoyalFlush(hand, rank){
 
     return isStraightFlush(hand, rank) == Rank.ACE
