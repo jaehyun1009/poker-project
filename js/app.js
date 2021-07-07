@@ -367,6 +367,7 @@ function render(){
         foldButtonEl.disabled = true
         turnButtonEl.innerText = `Reset`
         findHandRanks()
+        determineWinner()
 
     }
 
@@ -769,9 +770,24 @@ function determineScore(obj, hand, suits, ranks){
         validRanks.sort((a, b) => sortingFunction(a, b))
 
         obj.kickers = validRanks.slice(validRanks.length - 5, validRanks.length)
-        console.log(obj.kickers)
 
     }
+
+}
+
+function determineWinner(){
+
+    const scores = players.map(player => player.score)
+    const bestScore = Math.max(...scores)
+
+    console.log(scores)
+    console.log(bestScore)
+
+    const winningPlayers = players.filter(player2 => player2.score == bestScore)
+    const winningNames = winningPlayers.map(player3 => player3.name)
+    
+    console.log(winningPlayers)
+    console.log(winningNames)
 
 }
 
