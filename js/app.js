@@ -619,7 +619,15 @@ isPair = (ranks) => Object.values(ranks).some(numRanks => numRanks > 1)
 function determineScore(obj, hand, suits, ranks){
 
     // map each card to an array of rank values
-    const handNumVals = hand.map(player => player.rank)
+    // If the rank is ace, return 14 instead (greater than king)
+    const handNumVals = hand.map((player) => {
+
+        if (player.rank == Rank.ACE)
+            return Rank.ACE + Object.keys(Rank).length
+        else
+            return player.rank
+
+    })
 
     // simple sorting function that sorts handNumVals by number
     handNumVals.sort(function(a, b){
@@ -635,13 +643,10 @@ function determineScore(obj, hand, suits, ranks){
 
     if (obj.handRank == `High Card`){
 
-        if (handNumVals[0] == Rank.ACE)
-            obj.score += handNumVals.shift() + Object.keys(Rank).length
-        else
-            obj.score += handNumVals.pop()
+        obj.score += handNumVals.pop()
 
-        // set kickers to remaining numbers
-        obj.kickers = handNumVals
+        // set kickers to remaining best 4 numbers
+        obj.kickers = handNumVals.slice(2, handNumVals.length)
 
     }
 
@@ -654,13 +659,15 @@ function determineScore(obj, hand, suits, ranks){
                 matchingValue = parseInt(key)
         }
 
+        if (matchingValue == Rank.ACE)
+            matchingValue += Object.keys(Rank).length
+
         // generate kickers using filter
         obj.kickers = handNumVals.filter(rankVal => rankVal != matchingValue)
+        obj.kickers.shift()
+        obj.kickers.shift()
 
-        if (matchingValue == Rank.ACE)
-            obj.score += Rank.ACE + Object.keys(Rank).length
-        else
-            obj.score += matchingValue
+        obj.score += matchingValue
 
     }
 
@@ -673,13 +680,15 @@ function determineScore(obj, hand, suits, ranks){
                 matchingValue = parseInt(key)
         }
 
+        if (matchingValue == Rank.ACE)
+            matchingValue += Object.keys(Rank).length
+
         // generate kickers using filter
         obj.kickers = handNumVals.filter(rankVal => rankVal != matchingValue)
+        obj.kickers.shift()
+        obj.kickers.shift()
 
-        if (matchingValue == Rank.ACE)
-            obj.score += Rank.ACE + Object.keys(Rank).length
-        else
-            obj.score += matchingValue
+        obj.score += matchingValue
 
     }
 
@@ -692,13 +701,15 @@ function determineScore(obj, hand, suits, ranks){
                 matchingValue = parseInt(key)
         }
 
+        if (matchingValue == Rank.ACE)
+            matchingValue += Object.keys(Rank).length
+
         // generate kickers using filter
         obj.kickers = handNumVals.filter(rankVal => rankVal != matchingValue)
+        obj.kickers.shift()
+        obj.kickers.shift()
 
-        if (matchingValue == Rank.ACE)
-            obj.score += Rank.ACE + Object.keys(Rank).length
-        else
-            obj.score += matchingValue
+        obj.score += matchingValue
 
     }
 
@@ -718,17 +729,18 @@ function determineScore(obj, hand, suits, ranks){
                 matchingValue3 = parseInt(key)
         }
 
-        if (matchingValue3 != 0)
+        if (matchingValue3 != 0 && matchingValue1 != Rank.ACE)
             matchingValue1 = matchingValue3
+
+        if (matchingValue1 == Rank.ACE)
+            matchingValue1 += Object.keys(Rank).length
 
         // generate kickers using filter
         obj.kickers = handNumVals.filter(rankVal => rankVal != matchingValue1 && rankVal != matchingValue2)
+        obj.kickers.shift()
+        obj.kickers.shift()
 
-        if (matchingValue1 == Rank.ACE)
-            obj.score += (Rank.ACE + Object.keys(Rank).length) * buffer + matchingValue2
-        else if (matchingValue2 == Rank.ACE)
-            obj.score += (Rank.ACE + Object.keys(Rank).length) * buffer + matchingValue1
-        else if (matchingValue1 > matchingValue2)
+        if (matchingValue1 > matchingValue2)
             obj.score += matchingValue1 * buffer + matchingValue2
         else // (matchingValue2 < matchingValue1)
             obj.score += matchingValue2 * buffer + matchingValue1
