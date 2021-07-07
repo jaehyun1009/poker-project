@@ -121,6 +121,8 @@ let players = [
         card1: null,
         card2: null,
         handRank: null,
+        score: null,
+        kickers: null
     }
 ]
 
@@ -150,6 +152,8 @@ startGameEl.addEventListener(`click`, function(){
                 card1: null,
                 card2: null,
                 handRank: null,
+                score: null,
+                kickers: null
             }
         )
     }
@@ -346,7 +350,8 @@ function render(){
         player7.hidden = false
 
     // Fold button is enabled until all cards are shown
-    foldButtonEl.disabled = false
+    // If number of players == 1, fold button is disabled
+    numberOfPlayers == 1 ? foldButtonEl.disabled = true : foldButtonEl.disabled = false
 
     // Conditions for different "stages" of a poker round depending on how many cards are shown
     if (stage == 0)
@@ -398,6 +403,7 @@ function render(){
 }
 
 // Determines hand rank. Called after all cards are turned over
+// Populates handRank in player objects
 function findHandRank(obj){
 
     // create array of 7 cards for the table and hand to be ranked
@@ -446,32 +452,50 @@ function findHandRank(obj){
         
         })
 
-    if (isRoyalFlush(hand, rankCount))
+    if (isRoyalFlush(hand, rankCount)){
         obj.handRank = `Royal Flush`
+        obj.score = 9001
+    }
     
-    else if (isStraightFlush(hand, rankCount))
+    else if (isStraightFlush(hand, rankCount)){
         obj.handRank = `Straight Flush`
+        obj.score = 8000 + isStraightFlush(hand, rankCount)
+    }
 
-    else if (isFourOfAKind(rankCount))
+    else if (isFourOfAKind(rankCount)){
         obj.handRank = `Four of a Kind`
+        obj.score = 7000
+    }
 
-    else if (isFullHouse(rankCount))
+    else if (isFullHouse(rankCount)){
         obj.handRank = `Full House`
+        obj.score = 6000
+    }
 
-    else if (isFlush(suitCount))
+    else if (isFlush(suitCount)){
         obj.handRank = `Flush`
+        obj.score = 5000
+    }
 
-    else if (isStraight(hand))
+    else if (isStraight(hand)){
         obj.handRank = `Straight`
+        obj.score = 4000 + isStraight(hand)
+    }
 
-    else if (isThreeOfAKind(rankCount))
+    else if (isThreeOfAKind(rankCount)){
         obj.handRank = `Three of a Kind`
+        obj.score = 3000
+    }
 
-    else if (isTwoPairs(rankCount))
+    else if (isTwoPairs(rankCount)){
         obj.handRank = `Two Pairs`
+        obj.score = 2000
+    }
 
-    else if (isPair(rankCount))
+    else if (isPair(rankCount)){
         obj.handRank = `One Pair`
+        obj.score = 1000
+    }
 
     else // high card
         obj.handRank = `High Card`
