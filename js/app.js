@@ -121,7 +121,7 @@ let players = [
         card1: null,
         card2: null,
         handRank: null,
-        score: null,
+        score: 0,
         kickers: null
     }
 ]
@@ -309,6 +309,8 @@ function resetTable(){
 
         // reset hand rank of each player
         players[i].handRank = ``
+        players[i].score = 0
+        players[i].kickers = null
 
     }
 
@@ -396,7 +398,7 @@ function render(){
             document.getElementById(`pl${i}-cd2`).innerHTML = `<img width="60" height="90" src="./img/cards/${players[i].card2.rank}_${players[i].card2.suit}.png" alt="Table card slot ${i+1}">`
         }
 
-        document.querySelector(`#player${i} > .hand-rank`).innerText = players[i].handRank
+        document.querySelector(`#player${i} > .hand-rank`).innerText = players[i].handRank + `\n(${players[i].score})`
 
     }
 
@@ -500,6 +502,8 @@ function findHandRank(obj){
     else // high card
         obj.handRank = `High Card`
 
+    determineScore(obj, hand, suitCount, rankCount)
+
 }
 
 // Executes findHandRank function on each player
@@ -520,7 +524,7 @@ isFlush = (suits) => Object.values(suits).some(numSuits => numSuits > 4)
 // Returns the highest value in a straight. 0 (false) if it's not.
 function isStraight(hand){
 
-    // separate each suit by buffer number before comparing each other for adjacent numbers
+    // map each card to an array of rank values
     const handNumVals = hand.map(obj => obj.rank)
 
     // simple sorting function that sorts handNumVals by number
@@ -534,8 +538,6 @@ function isStraight(hand){
             return 0
 
     })
-
-    console.log(handNumVals)
 
     // check each number to see if it contains hand numbers greater than it by 1, 2, 3, and 4 (or 9 checking for ace)
     for (let i=0; i<4; i++){
@@ -613,6 +615,127 @@ isFullHouse = (ranks) => isThreeOfAKind(ranks) && isTwoPairs(ranks)
 
 // Strategy: See if there are any rank values greater than 1 (more than 1 card of same rank). If so, return true. If not, return false.
 isPair = (ranks) => Object.values(ranks).some(numRanks => numRanks > 1)
+
+function determineScore(obj, hand, suits, ranks){
+
+    // map each card to an array of rank values
+    const handNumVals = hand.map(player => player.rank)
+
+    // simple sorting function that sorts handNumVals by number
+    handNumVals.sort(function(a, b){
+
+        if (a < b)
+            return -1
+        else if (a > b)
+            return 1
+        else
+            return 0
+
+    })
+
+    if (obj.handRank == `High Card`){
+
+        if (handNumVals[0] == Rank.ACE)
+            obj.score += handNumVals.shift() + Object.keys(Rank).length
+        else
+            obj.score += handNumVals.pop()
+
+        // set kickers to remaining numbers
+        obj.kickers = handNumVals
+
+    }
+
+    if (obj.handRank == `One Pair`){
+
+        let matchingValue
+
+        for (const key in ranks){
+            if (ranks[key] == 2)
+                matchingValue = parseInt(key)
+        }
+
+        // generate kickers using filter
+        obj.kickers = handNumVals.filter(rankVal => rankVal != matchingValue)
+
+        if (matchingValue == Rank.ACE)
+            obj.score += Rank.ACE + Object.keys(Rank).length
+        else
+            obj.score += matchingValue
+
+    }
+
+    if (obj.handRank == `Three of a Kind`){
+
+        let matchingValue
+
+        for (const key in ranks){
+            if (ranks[key] == 3)
+                matchingValue = parseInt(key)
+        }
+
+        // generate kickers using filter
+        obj.kickers = handNumVals.filter(rankVal => rankVal != matchingValue)
+
+        if (matchingValue == Rank.ACE)
+            obj.score += Rank.ACE + Object.keys(Rank).length
+        else
+            obj.score += matchingValue
+
+    }
+
+    if (obj.handRank == `Four of a Kind`){
+
+        let matchingValue
+
+        for (const key in ranks){
+            if (ranks[key] == 4)
+                matchingValue = parseInt(key)
+        }
+
+        // generate kickers using filter
+        obj.kickers = handNumVals.filter(rankVal => rankVal != matchingValue)
+
+        if (matchingValue == Rank.ACE)
+            obj.score += Rank.ACE + Object.keys(Rank).length
+        else
+            obj.score += matchingValue
+
+    }
+
+    if (obj.handRank == `Two Pairs`){
+
+        let matchingValue1 = 0
+        let matchingValue2 = 0
+        let matchingValue3 = 0
+        let buffer = 50
+
+        for (const key in ranks){
+            if (ranks[key] == 2 && !matchingValue1)
+                matchingValue1 = parseInt(key)
+            else if (ranks[key] == 2 && !matchingValue2)
+                matchingValue2 = parseInt(key)
+            else if (ranks[key] == 2 && !matchingValue3)
+                matchingValue3 = parseInt(key)
+        }
+
+        if (matchingValue3 != 0)
+            matchingValue1 = matchingValue3
+
+        // generate kickers using filter
+        obj.kickers = handNumVals.filter(rankVal => rankVal != matchingValue1 && rankVal != matchingValue2)
+
+        if (matchingValue1 == Rank.ACE)
+            obj.score += (Rank.ACE + Object.keys(Rank).length) * buffer + matchingValue2
+        else if (matchingValue2 == Rank.ACE)
+            obj.score += (Rank.ACE + Object.keys(Rank).length) * buffer + matchingValue1
+        else if (matchingValue1 > matchingValue2)
+            obj.score += matchingValue1 * buffer + matchingValue2
+        else // (matchingValue2 < matchingValue1)
+            obj.score += matchingValue2 * buffer + matchingValue1
+
+    }
+
+}
 
 // Initialization
 init()
