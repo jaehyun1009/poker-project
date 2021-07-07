@@ -229,8 +229,6 @@ function newDeck(){
 
 }
 
-// Uses Fisher-Yates algorithm to shuffle, then the deck is split and rejoined,
-// Do this process many times to get a good shuffle, like a human would divide the deck many times to shuffle.
 // Initializes game and shows beginning game screen
 function init(){
 
@@ -256,6 +254,8 @@ function init(){
 
 }
 
+// Uses Fisher-Yates algorithm to shuffle, then the deck is split and rejoined,
+// Do this process many times to get a good shuffle, like a human would divide the deck many times to shuffle.
 function shuffle(){
 
     let randomTimes = 10

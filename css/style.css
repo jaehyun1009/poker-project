@@ -16,6 +16,24 @@ body {
     top: 50%;
     left: 50%;
     transform: translate(-50%, -50%);
+    transition: border-color 0.5s ease;
+
+}
+
+@keyframes flash {
+    from {color: goldenrod;}
+    to {color: black;}
+}
+
+#main-menu:hover{
+
+    border-color: goldenrod;
+    animation-name: flash;
+    animation-duration: 0.5s;
+    animation-timing-function: linear;
+    animation-iteration-count: infinite;
+    animation-direction: alternate;
+    animation-play-state: running;
 
 }
 
@@ -31,7 +49,6 @@ body {
 
     width: 296px;
     height: 222px;
-    mix-blend-mode: multiply;
 
 }
 
@@ -88,6 +105,12 @@ button {
 button:hover:not([disabled]) {
 
     color: crimson;
+
+}
+
+#start-game:hover:not([disabled]){
+
+    color: goldenrod;
 
 }
 
@@ -201,7 +224,7 @@ button:hover:not([disabled]) {
 
 #player1 {
 
-    border-color: goldenrod;
+    border-color: gold;
     top: -74%;
     right: 35%;
 
