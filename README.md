@@ -12,11 +12,17 @@ https://www.partypoker.com/en/how-to-play/texas-holdem
 
 ## Additional Milestones
 ~~Support up to 8 players (7 computer villains)~~
+
 Implement proper tiebreaker system
+
 Implement proper betting system
+
 Implement statistics
+
 Support mobile users (different CSS)
+
 Spruce up animation here and there
+
 Add rudimentary AI
 
 ## Resources
