@@ -509,11 +509,24 @@ function findHandRank(obj){
 // Executes findHandRank function on each player
 const findHandRanks = () => players.forEach(obj => findHandRank(obj))
 
+// Generic sorting function that sorts by number. Used in sort iterator methods
+sortingFunction = (a, b) => {
+
+    if (a < b)
+        return -1
+    else if (a > b)
+        return 1
+    else
+        return 0
+
+}
+
 /*
 
     Helper functions for findHandRank
 
 */
+
 // Strategy: See if there are any rank values greater than 3 (4 cards of same rank). If so, return true. If not, return false.
 isFourOfAKind = (ranks) => Object.values(ranks).some(numRanks => numRanks == 4)
 
@@ -527,17 +540,7 @@ function isStraight(hand){
     // map each card to an array of rank values
     const handNumVals = hand.map(obj => obj.rank)
 
-    // simple sorting function that sorts handNumVals by number
-    handNumVals.sort(function(a, b){
-
-        if (a < b)
-            return -1
-        else if (a > b)
-            return 1
-        else
-            return 0
-
-    })
+    handNumVals.sort((a, b) => sortingFunction(a, b))
 
     // check each number to see if it contains hand numbers greater than it by 1, 2, 3, and 4 (or 9 checking for ace)
     for (let i=0; i<4; i++){
@@ -549,7 +552,7 @@ function isStraight(hand){
             if (handNumVals.includes(handNumVals[i] + 4))
                 return handNumVals[i] + 4
             else if (handNumVals.includes(handNumVals[i] - 9))
-                return Rank.ACE
+                return Rank.ACE + Object.keys(Rank).length
 
         }
 
@@ -568,17 +571,7 @@ function isStraightFlush(hand){
     let suitBuffer = 100
     const handNumVals = hand.map(obj => ((obj.suit - 1) * suitBuffer) + obj.rank)
 
-    // simple sorting function that sorts handNumVals by number
-    handNumVals.sort(function(a, b){
-
-        if (a < b)
-            return -1
-        else if (a > b)
-            return 1
-        else
-            return 0
-
-    })
+    handNumVals.sort((a, b) => sortingFunction(a, b))
 
     // check each number to see if it contains hand numbers greater than it by 1, 2, 3, and 4 (or 9 checking for ace)
     for (let i=0; i<4; i++){
@@ -616,6 +609,9 @@ isFullHouse = (ranks) => isThreeOfAKind(ranks) && isTwoPairs(ranks)
 // Strategy: See if there are any rank values greater than 1 (more than 1 card of same rank). If so, return true. If not, return false.
 isPair = (ranks) => Object.values(ranks).some(numRanks => numRanks > 1)
 
+/*
+
+*/
 function determineScore(obj, hand, suits, ranks){
 
     // map each card to an array of rank values
@@ -629,17 +625,7 @@ function determineScore(obj, hand, suits, ranks){
 
     })
 
-    // simple sorting function that sorts handNumVals by number
-    handNumVals.sort(function(a, b){
-
-        if (a < b)
-            return -1
-        else if (a > b)
-            return 1
-        else
-            return 0
-
-    })
+    handNumVals.sort((a, b) => sortingFunction(a, b))
 
     if (obj.handRank == `High Card`){
 
@@ -721,12 +707,14 @@ function determineScore(obj, hand, suits, ranks){
         let buffer = 50
 
         for (const key in ranks){
+
             if (ranks[key] == 2 && !matchingValue1)
                 matchingValue1 = parseInt(key)
             else if (ranks[key] == 2 && !matchingValue2)
                 matchingValue2 = parseInt(key)
             else if (ranks[key] == 2 && !matchingValue3)
                 matchingValue3 = parseInt(key)
+
         }
 
         if (matchingValue3 != 0 && matchingValue1 != Rank.ACE)
@@ -791,6 +779,29 @@ function determineScore(obj, hand, suits, ranks){
         obj.kickers.shift()
 
         obj.score += matchingValue1 * buffer + matchingValue2
+
+    }
+
+    if (obj.handRank == `Flush`){
+
+        let matchingValue
+
+        for (const key in suits){
+            if (suits[key] > 4)
+                matchingValue = parseInt(key)
+        }
+
+        validRanks = []
+        hand.forEach(function(elem){
+
+            if (elem.suit == matchingValue)
+                validRanks.push(elem.rank)
+
+        })
+        validRanks.sort((a, b) => sortingFunction(a, b))
+
+        obj.kickers = validRanks.slice(validRanks.length - 5, validRanks.length)
+        console.log(obj.kickers)
 
     }
 
