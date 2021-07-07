@@ -240,11 +240,8 @@ function init(){
     mainMenuEl.hidden = false
 
     tableEl.hidden = true
-    for (const buttonEl of buttonEls){
-
+    for (const buttonEl of buttonEls)
         buttonEl.hidden = true
-
-    }
 
     // reset all players other than you
     players.length = 1
@@ -323,31 +320,22 @@ function render(){
     mainMenuEl.hidden = true
 
     tableEl.hidden = false
-    for (const buttonEl of buttonEls){
-
+    for (const buttonEl of buttonEls)
         buttonEl.hidden = false
-
-    }
 
     // Unhide player elements according to number of players you selected in the main menu
     if (numberOfPlayers > 1)
         player1.hidden = false
-
     if (numberOfPlayers > 2)
         player2.hidden = false
-
     if (numberOfPlayers > 3)
         player3.hidden = false
-
     if (numberOfPlayers > 4)
         player4.hidden = false
-
     if (numberOfPlayers > 5)
         player5.hidden = false
-
     if (numberOfPlayers > 6)
         player6.hidden = false
-
     if (numberOfPlayers > 7)
         player7.hidden = false
 
@@ -365,19 +353,15 @@ function render(){
         tableCard2El.innerHTML = `<img width="60" height="90" src="./img/cards/${tableCards[2].rank}_${tableCards[2].suit}.png" alt="Table card slot 3">`
         turnButtonEl.innerText = `Turn`
     }
-
     if (stage > 1){ // turn
         tableCard3El.innerHTML = `<img width="60" height="90" src="./img/cards/${tableCards[3].rank}_${tableCards[3].suit}.png" alt="Table card slot 4">`
         turnButtonEl.innerText = `River`
     }
-
     if (stage > 2){ // river
 
         tableCard4El.innerHTML = `<img width="60" height="90" src="./img/cards/${tableCards[4].rank}_${tableCards[4].suit}.png" alt="Table card slot 5">`
         turnButtonEl.innerText = `Reveal`
-
     }
-
     if (stage > 3){ // reveal
 
         foldButtonEl.disabled = true
@@ -457,48 +441,39 @@ function findHandRank(obj){
     if (isRoyalFlush(hand, rankCount)){
         obj.handRank = `Royal Flush`
         obj.score = 9001
-    }
-    
+    }  
     else if (isStraightFlush(hand, rankCount)){
         obj.handRank = `Straight Flush`
         obj.score = 8000 + isStraightFlush(hand, rankCount)
     }
-
     else if (isFourOfAKind(rankCount)){
         obj.handRank = `Four of a Kind`
         obj.score = 7000
     }
-
     else if (isFullHouse(rankCount)){
         obj.handRank = `Full House`
         obj.score = 6000
     }
-
     else if (isFlush(suitCount)){
         obj.handRank = `Flush`
         obj.score = 5000
     }
-
     else if (isStraight(hand)){
         obj.handRank = `Straight`
         obj.score = 4000 + isStraight(hand)
     }
-
     else if (isThreeOfAKind(rankCount)){
         obj.handRank = `Three of a Kind`
         obj.score = 3000
     }
-
     else if (isTwoPairs(rankCount)){
         obj.handRank = `Two Pairs`
         obj.score = 2000
     }
-
     else if (isPair(rankCount)){
         obj.handRank = `One Pair`
         obj.score = 1000
     }
-
     else // high card
         obj.handRank = `High Card`
 
@@ -639,7 +614,6 @@ function determineScore(obj, hand, suits, ranks){
     if (obj.handRank == `One Pair`){
 
         let matchingValue
-
         for (const key in ranks){
             if (ranks[key] == 2)
                 matchingValue = parseInt(key)
@@ -660,7 +634,6 @@ function determineScore(obj, hand, suits, ranks){
     if (obj.handRank == `Three of a Kind`){
 
         let matchingValue
-
         for (const key in ranks){
             if (ranks[key] == 3)
                 matchingValue = parseInt(key)
@@ -681,7 +654,6 @@ function determineScore(obj, hand, suits, ranks){
     if (obj.handRank == `Four of a Kind`){
 
         let matchingValue
-
         for (const key in ranks){
             if (ranks[key] == 4)
                 matchingValue = parseInt(key)
@@ -719,7 +691,6 @@ function determineScore(obj, hand, suits, ranks){
 
         if (matchingValue3 != 0 && matchingValue1 != Rank.ACE)
             matchingValue1 = matchingValue3
-
         if (matchingValue1 == Rank.ACE)
             matchingValue1 += Object.keys(Rank).length
 
@@ -766,10 +737,8 @@ function determineScore(obj, hand, suits, ranks){
 
         if (matchingValue1 == Rank.ACE)
             matchingValue1 += Object.keys(Rank).length
-
         if (matchingValue2 == Rank.ACE)
             matchingValue2 += Object.keys(Rank).length
-
         if (matchingValue3 && matchingValue2 != 14) // Rank.ACE + Object.keys(Rank).length
             matchingValue2 = matchingValue3
 
@@ -785,7 +754,6 @@ function determineScore(obj, hand, suits, ranks){
     if (obj.handRank == `Flush`){
 
         let matchingValue
-
         for (const key in suits){
             if (suits[key] > 4)
                 matchingValue = parseInt(key)
