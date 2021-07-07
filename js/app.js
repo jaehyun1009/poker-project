@@ -747,6 +747,53 @@ function determineScore(obj, hand, suits, ranks){
 
     }
 
+    if (obj.handRank == `Full House`){
+
+        let matchingValue1 = 0
+        let matchingValue2 = 0
+        let matchingValue3 = 0
+        let buffer = 50
+
+        for (const key in ranks){
+
+            if (ranks[key] == 3 && !matchingValue1)
+                matchingValue1 = parseInt(key)
+            else if (ranks[key] == 3 && !matchingValue2)
+                matchingValue2 = parseInt(key)
+
+        }
+
+        if (matchingValue2 == 0){
+
+            for (const key in ranks){
+
+                if (ranks[key] == 2 && !matchingValue2)
+                    matchingValue2 = parseInt(key)
+                else if (ranks[key] == 2 && !matchingValue3)
+                    matchingValue3 = parseInt(key)
+
+            }
+
+        }
+
+        if (matchingValue1 == Rank.ACE)
+            matchingValue1 += Object.keys(Rank).length
+
+        if (matchingValue2 == Rank.ACE)
+            matchingValue2 += Object.keys(Rank).length
+
+        if (matchingValue3 && matchingValue2 != 14) // Rank.ACE + Object.keys(Rank).length
+            matchingValue2 = matchingValue3
+
+        // generate kickers using filter
+        obj.kickers = handNumVals.filter(rankVal => rankVal != matchingValue1 && rankVal != matchingValue2)
+        obj.kickers.shift()
+        obj.kickers.shift()
+
+        obj.score += matchingValue1 * buffer + matchingValue2
+
+    }
+
 }
 
 // Initialization
