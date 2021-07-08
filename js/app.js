@@ -2,7 +2,6 @@
     Constants
     Suit: Suit of card
     Rank: Rank of card
-    handRank: Rank of hands (how good your hand is after last card is revealed)
     Card: Suit and Rank representing a playing card
 */
 
@@ -105,9 +104,12 @@ const player7El = document.getElementById(`player7`)
         name: identifier of player
         money: amount of money a player has
         bet: amount of money a player bet on a turn
-        blind: blind status (big blind, small blind, or button)
         cards: cards that a player is holding in his or her hand
         handRank: number assigned to a player that designates hand rank after river is revealed
+        score: strength of hand written in number format
+        kicker: tiebreakers for hands with same score
+    winningPlayers: Player(s) with the highest score at the end of a round. If there are more than 1 winning players, split the pot.
+    heroWins: true if hero (you) is the last person standing.
     
 */
 let deck = []
@@ -120,7 +122,6 @@ let players = [
     {
         name: 'Hero',
         money: startingMoney,
-        blind: null,
         bet: 0,
         card1: null,
         card2: null,
@@ -345,17 +346,12 @@ function resetTable(){
         if (players[i].money > 0){
             players[i].card1 = deck.pop()
             players[i].card2 = deck.pop()
-            console.log(i, players[i].card1, players[i].card2)
             players[i].money > minimumBet ? players[i].bet = minimumBet : players[i].bet = players[i].money
             players[i].money -= players[i].bet
         }
         else{
             players[i].bet = 0
-            document.getElementById(`pl${i}-cd1`).innerHTML = ``
-            document.getElementById(`pl${i}-cd2`).innerHTML = ``
-            document.querySelector(`#player${i} > .hand-rank`).innerText = `Game Over`
-            document.querySelector(`#player${i} > .money`).innerText = `Money: $${players[i].money}`
-            document.querySelector(`#player${i} > .bet`).innerText = `Bet: $${players[i].bet}`
+            players[i].handRank = `Game Over`
         }
 
     }
@@ -407,7 +403,6 @@ function render(){
     // Conditions for different "stages" of a poker round depending on how many cards are shown
     if (stage == 0)
         checkButtonEl.innerText = `Check`
-
     if (stage > 0){
         tableCard0El.innerHTML = `<img width="60" height="90" src="./img/cards/${tableCards[0].rank}_${tableCards[0].suit}.png" alt="Table card slot 1">`
         tableCard1El.innerHTML = `<img width="60" height="90" src="./img/cards/${tableCards[1].rank}_${tableCards[1].suit}.png" alt="Table card slot 2">`
@@ -424,8 +419,6 @@ function render(){
         findHandRanks()
 
         if (numberOfPlayers > 1){
-
-            console.log(tableCards)
 
             determineWinner()
 
@@ -467,19 +460,20 @@ function render(){
     // Render player info
     for (let i=0; i<numberOfPlayers; i++){
         
-        if (stage < 4 && i > 0){
+        if (players[i].card1 == null){
+            document.getElementById(`pl${i}-cd1`).innerHTML = ``
+            document.getElementById(`pl${i}-cd2`).innerHTML = ``
+        }
+        else if (stage < 4 && i > 0){
             document.getElementById(`pl${i}-cd1`).innerHTML = `<img width="60" height="90" src="./img/cards/back.png" alt="Table card slot 1">`
             document.getElementById(`pl${i}-cd2`).innerHTML = `<img width="60" height="90" src="./img/cards/back.png" alt="Table card slot 1">`
         }
         else {
-            if (players[i].card1 != null){
-                document.getElementById(`pl${i}-cd1`).innerHTML = `<img width="60" height="90" src="./img/cards/${players[i].card1.rank}_${players[i].card1.suit}.png" alt="Table card slot ${i+1}">`
-                document.getElementById(`pl${i}-cd2`).innerHTML = `<img width="60" height="90" src="./img/cards/${players[i].card2.rank}_${players[i].card2.suit}.png" alt="Table card slot ${i+1}">`
-            }
+            document.getElementById(`pl${i}-cd1`).innerHTML = `<img width="60" height="90" src="./img/cards/${players[i].card1.rank}_${players[i].card1.suit}.png" alt="Table card slot ${i+1}">`
+            document.getElementById(`pl${i}-cd2`).innerHTML = `<img width="60" height="90" src="./img/cards/${players[i].card2.rank}_${players[i].card2.suit}.png" alt="Table card slot ${i+1}">`
         }
-        
-        if (players[i].money > 0)
-            document.querySelector(`#player${i} > .hand-rank`).innerText = players[i].handRank
+
+        document.querySelector(`#player${i} > .hand-rank`).innerText = players[i].handRank
 
         if (numberOfPlayers > 1) {
             document.querySelector(`#player${i} > .money`).innerText = `Money: $${players[i].money}`
@@ -577,7 +571,6 @@ sortingFunction = (a, b) => {
     Helper functions for findHandRank
 
 */
-
 // Strategy: See if there are any rank values greater than 3 (4 cards of same rank). If so, return true. If not, return false.
 isFourOfAKind = (ranks) => Object.values(ranks).some(numRanks => numRanks == 4)
 
@@ -855,6 +848,7 @@ function determineScore(obj, hand, suits, ranks){
 
 }
 
+// Using the determineScore function to obtain scores and kickers for each player's hand, evaluates the winners.
 function determineWinner(){
 
     const scores = players.map(player => player.score)
@@ -887,7 +881,7 @@ function determineWinner(){
     players.forEach(function(player){
 
         if (winningPlayers.includes(player.name))
-            player.money += totalBet
+            player.money += Math.floor(totalBet)
 
         player.bet = 0
 
