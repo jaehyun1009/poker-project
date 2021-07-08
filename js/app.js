@@ -229,23 +229,30 @@ raiseButtonEl.addEventListener(`click`, function(){
 
     let additionalBet = parseInt(prompt(`How much do you want to increase your bet by?\nMinimum bet: ${minimumBet} or all-in\nNote: Decimal inputs are rounded down.`))
 
+    // Function to properly change player's bet and money amounts after additional bet is made
+    const bet = (player) => {
+        if (player.money >= additionalBet){
+            player.money -= additionalBet
+            player.bet += additionalBet
+        }
+        else {
+            let leftover = player.money
+            player.money -= leftover
+            player.bet += leftover
+        }
+    }
+
+    // Move onto the next stage if valid number is entered
     let validNumberEntered = false
+
+    // Sanity checks
+    // If additional bet is less than minimum bet, and that additional bet is not going all in, alert the user of incorrect betting amount.
 
     if (additionalBet < minimumBet){
         if (additionalBet != players[0].money)
             alert("Please place your bet greater than the minimum required or go all-in.")
-        else{
-            players.forEach(player => {
-                if (player.money >= additionalBet){
-                    player.money -= additionalBet
-                    player.bet += additionalBet
-                }
-                else {
-                    let leftover = player.money
-                    player.money -= leftover
-                    player.bet += leftover
-                }
-            })
+        else{ // valid number entered (all in)
+            players.forEach(bet)
             validNumberEntered = true
         }
     }
@@ -253,18 +260,8 @@ raiseButtonEl.addEventListener(`click`, function(){
         alert("You do not have that much money to bet!")
     else if (isNaN(additionalBet))
         alert("Please enter a valid number!")
-    else{
-        players.forEach(player => {
-            if (player.money >= additionalBet){
-                player.money -= additionalBet
-                player.bet += additionalBet
-            }
-            else {
-                let leftover = player.money
-                player.money -= leftover
-                player.bet += leftover
-            }
-        })
+    else{ // valid number entered
+        players.forEach(bet)
         validNumberEntered = true
     }
 
@@ -275,17 +272,22 @@ raiseButtonEl.addEventListener(`click`, function(){
 
 })
 
+// Triggered when fold button is pressed to give up your hand
+// Alerts the user to confirm to prevent players from accidentally folding
 foldButtonEl.addEventListener(`click`, function(){
 
     if (window.confirm(`Are you sure you want to give up your hand?`)){
 
         if (numberOfPlayers > 1){
 
+            // Sets winning player to a random villain if there is more than 1 player
             let winningPlayer = Math.ceil(Math.random() * numberOfPlayers)
             winningPlayers.push(`Villain ${winningPlayer}`)
             
             players.forEach(function(player){
                 if (winningPlayers.includes(player.name))
+
+                    // "winning" player all the money from each player's bet
                     player.money += players.reduce((total, player) => total + player.bet, 0)
             })
 
@@ -475,6 +477,7 @@ function render(){
         tableCard4El.innerHTML = `<img width="60" height="90" src="./img/cards/${tableCards[4].rank}_${tableCards[4].suit}.png" alt="Table card slot 5">`
     if (stage > 3){ // reveal
 
+        // Disable all betting buttons and check button becomes reset button
         foldButtonEl.disabled = true
         raiseButtonEl.disabled = true
         checkButtonEl.innerText = `Reset`
@@ -482,11 +485,12 @@ function render(){
 
         if (numberOfPlayers > 1){
 
+            // Determine Winner. Winner gets added to the global winningPlayers array.
             determineWinner()
 
-            if (winningPlayers.length == 1){
+            // Display winner message after winner is determined
+            if (winningPlayers.length == 1)
                 winnersEl.innerText = `\n\n\n\n${winningPlayers[0]} wins`
-            }
             else {
                 winnersText = winningPlayers.join(`, `)
                 winnersEl.innerText = `\n\n\n\nDraw between: ${winnersText}`
@@ -497,12 +501,14 @@ function render(){
             if (winningPlayers.length > 1 && winningPlayers.includes(`Hero`))
                 winnersEl.style.color = `darkgoldenrod`
 
+            // Check to see if the hero player is the last player standing. If so, you win!
             heroWins = true
             players.forEach(function(player, idx){
                 if (player.money > 0 && idx != 0)
                     heroWins = false
             })
 
+            // Disable all buttons if you are the only player standing
             if (heroWins){
                 checkButtonEl.disabled = true
                 raiseButtonEl.disabled = true
@@ -510,20 +516,20 @@ function render(){
 
         }
 
-        // game over
+        // Game over. Disable check button.
         if (players[0].money <= 0)
             checkButtonEl.disabled = true
 
     }
 
-    // Render player info
+    // Render player info (Cards each player is holding)
     for (let i=0; i<numberOfPlayers; i++){
         
-        if (players[i].card1 == null){
+        if (players[i].card1 == null){ // display no cards for villains with no money to play
             document.getElementById(`pl${i}-cd1`).innerHTML = ``
             document.getElementById(`pl${i}-cd2`).innerHTML = ``
         }
-        else if (stage < 4 && i > 0){
+        else if (stage < 4 && i > 0){ // display cards face down for villains before the reveal phase
             document.getElementById(`pl${i}-cd1`).innerHTML = `<img width="60" height="90" src="./img/cards/back.png" alt="Table card slot 1">`
             document.getElementById(`pl${i}-cd2`).innerHTML = `<img width="60" height="90" src="./img/cards/back.png" alt="Table card slot 1">`
         }
@@ -532,8 +538,10 @@ function render(){
             document.getElementById(`pl${i}-cd2`).innerHTML = `<img width="60" height="90" src="./img/cards/${players[i].card2.rank}_${players[i].card2.suit}.png" alt="Table card slot ${i+1}">`
         }
 
+        // Display hand rank after the reveal phase
         document.querySelector(`#player${i} > .hand-rank`).innerText = players[i].handRank
 
+        // Display money only if there's more than 1 player.
         if (numberOfPlayers > 1) {
             document.querySelector(`#player${i} > .money`).innerText = `Money: $${players[i].money}`
             document.querySelector(`#player${i} > .bet`).innerText = `Bet: $${players[i].bet}`
@@ -739,11 +747,11 @@ function determineScore(obj, hand, suits, ranks){
 
     }
 
-    if (obj.handRank == `One Pair`){
+    const pairMatch = (num) => {
 
         let matchingValue
         for (const key in ranks){
-            if (ranks[key] == 2)
+            if (ranks[key] == num)
                 matchingValue = parseInt(key)
         }
 
@@ -757,46 +765,18 @@ function determineScore(obj, hand, suits, ranks){
 
         obj.score += matchingValue
 
+    }
+
+    if (obj.handRank == `One Pair`){
+        pairMatch(2)
     }
 
     if (obj.handRank == `Three of a Kind`){
-
-        let matchingValue
-        for (const key in ranks){
-            if (ranks[key] == 3)
-                matchingValue = parseInt(key)
-        }
-
-        if (matchingValue == Rank.ACE)
-            matchingValue += Object.keys(Rank).length
-
-        // generate kicker using filter
-        obj.kicker = handNumVals.filter(rankVal => rankVal != matchingValue)
-        obj.kicker.shift()
-        obj.kicker.shift()
-
-        obj.score += matchingValue
-
+        pairMatch(3)
     }
 
     if (obj.handRank == `Four of a Kind`){
-
-        let matchingValue
-        for (const key in ranks){
-            if (ranks[key] == 4)
-                matchingValue = parseInt(key)
-        }
-
-        if (matchingValue == Rank.ACE)
-            matchingValue += Object.keys(Rank).length
-
-        // generate kicker using filter
-        obj.kicker = handNumVals.filter(rankVal => rankVal != matchingValue)
-        obj.kicker.shift()
-        obj.kicker.shift()
-
-        obj.score += matchingValue
-
+        pairMatch(4)
     }
 
     if (obj.handRank == `Two Pairs`){
