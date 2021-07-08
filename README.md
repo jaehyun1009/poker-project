@@ -10,14 +10,14 @@ https://www.partypoker.com/en/how-to-play/texas-holdem
 ## Motivation
 "I LOVE MONEY" - Mr. Krabs
 
-## Additional Milestones
+## Stretch Goals
 ~~Support up to 8 players (7 computer villains)~~
 
 ~~Implement proper tiebreaker system~~
 
 ~~Implement proper betting system~~ Basic betting system is done, but different from how a real poker game plays due to lack of AI.
 
-Implement statistics
+Implement timer for minimum bet to go up
 
 Support mobile users
 

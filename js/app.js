@@ -100,6 +100,9 @@ const player7El = document.getElementById(`player7`)
     deck: array representing 52 cards (deck)
     tableCards: cards displayed on the table
     stage: determines how many cards are to be shown in the table
+    numberOfPlayers: self-explanatory, but changes accoring to the number you chose on the main screen. 1 by default.
+    startingMoney: Amount of money each player starts out with
+    minimumBet: Minimum amount of money a player must bet in each round
     players: list of player objects that each consist of the following:
         name: identifier of player
         money: amount of money a player has
@@ -118,18 +121,7 @@ let stage = 0
 let numberOfPlayers = 1
 let startingMoney = 1000
 let minimumBet = 10
-let players = [
-    {
-        name: 'Hero',
-        money: startingMoney,
-        bet: 0,
-        card1: null,
-        card2: null,
-        handRank: null,
-        score: 0,
-        kicker: null
-    }
-]
+let players = []
 let winningPlayers = []
 let heroWins = false
 
@@ -138,6 +130,8 @@ let heroWins = false
     Event Listeners
 
 */
+// Triggered when main menu button is pressed to go back to the main menu.
+// Alerts the user if they really want to go back to prevent players from accidentally going back to the main menu.
 mainMenuButtonEl.addEventListener(`click`, function(){
 
     if (window.confirm(`Going back to the main menu will reset the entire game.\nAre you sure you want to go back?`))
@@ -145,6 +139,8 @@ mainMenuButtonEl.addEventListener(`click`, function(){
 
 })
 
+// Triggered when start game button is pressed.
+// Creates amount of new players equal to number of players you chose on the main screen, and starts the board fresh.
 startGameEl.addEventListener(`click`, function(){
 
     numberOfPlayers = playerNumberEl.value
@@ -180,6 +176,8 @@ startGameEl.addEventListener(`click`, function(){
 
 })
 
+// Helper function for event triggered after check and raise buttons.
+// Progresses stage of the game to turn over cards and wait for bets.
 function nextStage(){
 
     switch (stage){
@@ -217,6 +215,7 @@ function nextStage(){
 
 }
 
+// Triggered when check button is pressed (no additional bet)
 checkButtonEl.addEventListener(`click`, function(){
     
     nextStage()
@@ -224,29 +223,8 @@ checkButtonEl.addEventListener(`click`, function(){
 
 })
 
-foldButtonEl.addEventListener(`click`, function(){
-
-    if (window.confirm(`Are you sure you want to give up your hand?`)){
-
-        if (numberOfPlayers > 1){
-
-            let winningPlayer = Math.ceil(Math.random() * numberOfPlayers)
-            winningPlayers.push(`Villain ${winningPlayer}`)
-            
-            players.forEach(function(player){
-                if (winningPlayers.includes(player.name))
-                    player.money += players.reduce((total, player) => total + player.bet, 0)
-            })
-
-        }
-
-        resetTable()
-        render()
-
-    }
-
-})
-
+// Triggered when raise button is pressed for additional betting.
+// Alerts the user towards making correct amount of bet.
 raiseButtonEl.addEventListener(`click`, function(){
 
     let additionalBet = parseInt(prompt(`How much do you want to increase your bet by?\nMinimum bet: ${minimumBet} or all-in\nNote: Decimal inputs are rounded down.`))
@@ -294,6 +272,29 @@ raiseButtonEl.addEventListener(`click`, function(){
         nextStage()
 
     render()
+
+})
+
+foldButtonEl.addEventListener(`click`, function(){
+
+    if (window.confirm(`Are you sure you want to give up your hand?`)){
+
+        if (numberOfPlayers > 1){
+
+            let winningPlayer = Math.ceil(Math.random() * numberOfPlayers)
+            winningPlayers.push(`Villain ${winningPlayer}`)
+            
+            players.forEach(function(player){
+                if (winningPlayers.includes(player.name))
+                    player.money += players.reduce((total, player) => total + player.bet, 0)
+            })
+
+        }
+
+        resetTable()
+        render()
+
+    }
 
 })
 
