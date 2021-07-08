@@ -396,6 +396,14 @@ function resetTable(){
     if (numberOfPlayers == 1)
         players[0].money = startingMoney
 
+    let newMinimumBet = minimumBet
+
+    // Multiply minimum bet by 2 for each player that's out of the game
+    for (let i=0; i<numberOfPlayers; i++){
+        if (players[i].money <= 0)
+            newMinimumBet *= 2
+    }
+
     for (let i=0; i<numberOfPlayers; i++){
 
         // reset hand rank of each player
@@ -409,7 +417,7 @@ function resetTable(){
         if (players[i].money > 0){
             players[i].card1 = deck.pop()
             players[i].card2 = deck.pop()
-            players[i].money > minimumBet ? players[i].bet = minimumBet : players[i].bet = players[i].money
+            players[i].money > newMinimumBet ? players[i].bet = newMinimumBet : players[i].bet = players[i].money
             players[i].money -= players[i].bet
         }
         else{
