@@ -9,17 +9,14 @@
 
 // Numbers that represent suit of a playing card
 const Suit = {
-
     SPADES: 1,
     CLUBS: 2,
     HEARTS: 3,
     DIAMONDS: 4,
-
 }
 
 // Numbers that represent rank of a playing card
 const Rank = {
-
     ACE: 1,
     TWO: 2,
     THREE: 3,
@@ -33,7 +30,6 @@ const Rank = {
     JACK: 11,
     QUEEN: 12,
     KING: 13
-
 }
 
 // Make the Suit and Rank objects immutable
@@ -85,7 +81,8 @@ const tableCard1El = document.getElementById(`table-card-1`)
 const tableCard2El = document.getElementById(`table-card-2`)
 const tableCard3El = document.getElementById(`table-card-3`)
 const tableCard4El = document.getElementById(`table-card-4`)
-const winnersEl = document.querySelector(`h3`)
+const winnersEl = document.querySelector(`h2`)
+const resultsEl = document.querySelector(`h3`)
 
 // Player Elements
 const player1El = document.getElementById(`player1`)
@@ -102,8 +99,8 @@ const player7El = document.getElementById(`player7`)
     deck: array representing 52 cards (deck)
     tableCards: cards displayed on the table
     stage: determines how many cards are to be shown in the table
-    numberOfPlayers: self-explanatory, but changes accoring to the number you chose on the main screen. 1 by default.
     startingMoney: Amount of money each player starts out with
+    numberOfPlayers: self-explanatory, but changes accoring to the number you chose on the main screen.
     minimumBet: Minimum amount of money a player must bet in each round
     players: list of player objects that each consist of the following:
         name: identifier of player
@@ -120,10 +117,10 @@ const player7El = document.getElementById(`player7`)
 let deck = []
 let tableCards = []
 let stage = 0
-let numberOfPlayers = 1
-let startingMoney = 1000
-let minimumBet = 10
-let players = []
+let startingMoney = 10000
+let numberOfPlayers
+let minimumBet
+let players
 let winningPlayers = []
 let heroWins = false
 
@@ -146,6 +143,7 @@ mainMenuButtonEl.addEventListener(`click`, function(){
 startGameEl.addEventListener(`click`, function(){
 
     numberOfPlayers = playerNumberEl.value
+    minimumBet = Math.round(startingMoney / (50 * numberOfPlayers))
 
     players = [{
         name: 'Hero',
@@ -346,6 +344,7 @@ function init(){
 
     // reset game winning status
     heroWins = false
+    winnersEl.innerText = ``
 
 }
 
@@ -385,7 +384,7 @@ function resetTable(){
     tableCard2El.innerHTML = ``
     tableCard3El.innerHTML = ``
     tableCard4El.innerHTML = ``
-    winnersEl.innerText = ``
+    resultsEl.innerText = ``
 
     // Reshuffle deck and reset game state
     newDeck()
@@ -492,16 +491,16 @@ function render(){
 
             // Display winner message after winner is determined
             if (winningPlayers.length == 1)
-                winnersEl.innerText = `\n\n\n\n${winningPlayers[0]} wins`
+                resultsEl.innerText = `\n\n\n\n${winningPlayers[0]} wins`
             else {
                 winnersText = winningPlayers.join(`, `)
-                winnersEl.innerText = `\n\n\n\nDraw between: ${winnersText}`
+                resultsEl.innerText = `\n\n\n\nDraw between: ${winnersText}`
             }
 
-            winningPlayers.includes(`Hero`) ? winnersEl.style.color = `blue` : winnersEl.style.color = `red`
+            winningPlayers.includes(`Hero`) ? resultsEl.style.color = `blue` : resultsEl.style.color = `red`
                 
             if (winningPlayers.length > 1 && winningPlayers.includes(`Hero`))
-                winnersEl.style.color = `darkgoldenrod`
+                resultsEl.style.color = `darkgoldenrod`
 
             // Check to see if the hero player is the last player standing. If so, you win!
             heroWins = true
@@ -514,13 +513,18 @@ function render(){
             if (heroWins){
                 checkButtonEl.disabled = true
                 raiseButtonEl.disabled = true
+                winnersEl.style.color = `blue`
+                winnersEl.innerText = `You. Are. Winner.`
             }
 
         }
 
         // Game over. Disable check button.
-        if (players[0].money <= 0)
+        if (players[0].money <= 0){
             checkButtonEl.disabled = true
+            winnersEl.style.color = `red`
+            winnersEl.innerText = `Game Over!`
+        }
 
     }
 
@@ -757,7 +761,9 @@ function determineScore(obj, hand, suits, ranks){
 
     }
 
-    // Unified helper function to 
+    // Unified helper function to determine matching pair according to the condition.
+    // Adjusts score and kickers accordingly afterwards.
+    // If num is 2, check for 1 pair. If num is 3, check for 1 three of a kind...
     const pairMatch = (num) => {
 
         let matchingValue
@@ -778,18 +784,18 @@ function determineScore(obj, hand, suits, ranks){
 
     }
 
-    if (obj.handRank == `One Pair`){
+    if (obj.handRank == `One Pair`)
         pairMatch(2)
-    }
 
-    if (obj.handRank == `Three of a Kind`){
+    if (obj.handRank == `Three of a Kind`)
         pairMatch(3)
-    }
 
-    if (obj.handRank == `Four of a Kind`){
+    if (obj.handRank == `Four of a Kind`)
         pairMatch(4)
-    }
 
+    // Checks for best two matching pairs on hand rank of two pairs.
+    // If this code is run, we know that the hand has two pairs or three pairs.
+    // This allows us to explicitly search for two pairs without worrying about edge cases (i.e. full house)
     if (obj.handRank == `Two Pairs`){
 
         let matchingValue1 = 0
@@ -797,6 +803,7 @@ function determineScore(obj, hand, suits, ranks){
         let matchingValue3 = 0
         let buffer = 50
 
+        // Get all ranks that are pairs from lowest value to highest.
         for (const key in ranks){
             if (ranks[key] == 2 && !matchingValue1)
                 matchingValue1 = parseInt(key)
@@ -806,6 +813,7 @@ function determineScore(obj, hand, suits, ranks){
                 matchingValue3 = parseInt(key)
         }
 
+        // matchingValue1 and matchingValue2 become highest pairs. Everything else goes to kicker.
         if (matchingValue3 != 0 && matchingValue1 != Rank.ACE)
             matchingValue1 = matchingValue3
         if (matchingValue1 == Rank.ACE)
@@ -816,6 +824,7 @@ function determineScore(obj, hand, suits, ranks){
         obj.kicker.shift()
         obj.kicker.shift()
 
+        // Score determination: Whatever number that is greater gets buffer applied to it to signify that it is the determining pair in winning a head to head match.
         if (matchingValue1 > matchingValue2)
             obj.score += matchingValue1 * buffer + matchingValue2
         else // (matchingValue2 < matchingValue1)
@@ -823,6 +832,9 @@ function determineScore(obj, hand, suits, ranks){
 
     }
 
+    // Checks for best three of a kind and two of a kind
+    // If this code is run, we know that the hand has two pairs and nothing else.
+    // This allows us to explicitly search for two pairs without worrying about edge cases (i.e. full house)
     if (obj.handRank == `Full House`){
 
         let matchingValue1 = 0
@@ -830,6 +842,7 @@ function determineScore(obj, hand, suits, ranks){
         let matchingValue3 = 0
         let buffer = 50
 
+        // Get all ranks that are 3 of a kind from lowest rank to highest.
         for (const key in ranks){
             if (ranks[key] == 3 && !matchingValue1)
                 matchingValue1 = parseInt(key)
@@ -837,6 +850,7 @@ function determineScore(obj, hand, suits, ranks){
                 matchingValue2 = parseInt(key)
         }
 
+        // Only 1 3 of a kind, which means than other 4 cards form a pair or two.
         if (matchingValue2 == 0){
 
             for (const key in ranks){
@@ -850,15 +864,18 @@ function determineScore(obj, hand, suits, ranks){
 
         if (matchingValue1 == Rank.ACE)
             matchingValue1 += Object.keys(Rank).length
-        if (matchingValue2 == Rank.ACE)
+        if (matchingValue2 == Rank.ACE) // matchingValue2 cannot be Rank.ACE if matchingValue1 is.
             matchingValue2 += Object.keys(Rank).length
         if (matchingValue3 && matchingValue2 != 14) // Rank.ACE + Object.keys(Rank).length
-            matchingValue2 = matchingValue3
-
+            matchingValue2 = matchingValue3 // matchingValue2 is now always greater than matchingValue3.
+    
+        // Score determination: Whatever number that is 3 of a kind buffer applied to it to signify that it is more significant than the pair or lesser 3 of a kind.
         obj.score += matchingValue1 * buffer + matchingValue2
 
     }
 
+    // Get the suit that is flush, put the ranks that make the suit in a separate array.
+    // Kicker for flush ranks are not necessarily "kickers", but they will act as tiebreakers.
     if (obj.handRank == `Flush`){
 
         let matchingValue
@@ -878,6 +895,8 @@ function determineScore(obj, hand, suits, ranks){
 
     }
 
+    // Sort kickers from highest to lowest by reversing the array.
+    // Then converts the array to a "base 13" number with highest rank as highest significand for easy integer comparison after parseInt
     if (obj.kicker != null){
         const reverseKicker = obj.kicker.reverse()
         obj.kicker = parseInt(reverseKicker.reduce(function(stringNum, val){
@@ -895,20 +914,25 @@ function determineScore(obj, hand, suits, ranks){
 // Using the determineScore function to obtain scores and kickers for each player's hand, evaluates the winners.
 function determineWinner(){
 
+    // Compile scores for all players and get the highest score
     const scores = players.map(player => player.score)
     const bestScore = Math.max(...scores)
 
+    // Filter by players that won the game to determine tiebreakers between those that have the highest score, if there are any required.
     const playersWon = players.filter(player => player.score == bestScore)
 
     if (playersWon.length > 1){
 
+        // compare kickers. They have been sorted as a "base 13" number so that Math.max can be performed to accurately compare kickers.
         const kickers = playersWon.map(player => player.kicker)
         const bestKicker = Math.max(...kickers)
 
+        // If hand ranks are straight and full house, there are no kickers, therefore game is a draw.
         if (playersWon[0].handRank == `Straight` || playersWon[0].handRank == `Full House`){
             winningPlayers = playersWon.map(player => player.name)
         }
         else{
+            // Filter playersWon by player(s) that have the best kicker.
             playersWon.forEach(function(drawnPlayers){
                 if (drawnPlayers.kicker == bestKicker)
                     winningPlayers.push(drawnPlayers.name)
@@ -919,6 +943,7 @@ function determineWinner(){
     else
         winningPlayers = playersWon.map(player => player.name)
 
+    // Distribute bets to winning players
     let totalBet = players.reduce((total, player) => total + player.bet, 0)
     totalBet /= winningPlayers.length
 
