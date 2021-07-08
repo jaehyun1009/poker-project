@@ -117,7 +117,7 @@ let tableCards = []
 let stage = 0
 let numberOfPlayers = 1
 let startingMoney = 1000
-let minimumBet = 500
+let minimumBet = 10
 let players = [
     {
         name: 'Hero',
@@ -180,7 +180,7 @@ startGameEl.addEventListener(`click`, function(){
 
 })
 
-checkButtonEl.addEventListener(`click`, function(){
+function nextStage(){
 
     switch (stage){
 
@@ -215,6 +215,11 @@ checkButtonEl.addEventListener(`click`, function(){
 
     }
 
+}
+
+checkButtonEl.addEventListener(`click`, function(){
+    
+    nextStage()
     render()
 
 })
@@ -239,6 +244,56 @@ foldButtonEl.addEventListener(`click`, function(){
         render()
 
     }
+
+})
+
+raiseButtonEl.addEventListener(`click`, function(){
+
+    let additionalBet = parseInt(prompt(`How much do you want to increase your bet by?\nMinimum bet: ${minimumBet} or all-in\nNote: Decimal inputs are rounded down.`))
+
+    let validNumberEntered = false
+
+    if (additionalBet < minimumBet){
+        if (additionalBet != players[0].money)
+            alert("Please place your bet greater than the minimum required or go all-in.")
+        else{
+            players.forEach(player => {
+                if (player.money >= additionalBet){
+                    player.money -= additionalBet
+                    player.bet += additionalBet
+                }
+                else {
+                    let leftover = player.money
+                    player.money -= leftover
+                    player.bet += leftover
+                }
+            })
+            validNumberEntered = true
+        }
+    }
+    else if (additionalBet > players[0].money)
+        alert("You do not have that much money to bet!")
+    else if (isNaN(additionalBet))
+        alert("Please enter a valid number!")
+    else{
+        players.forEach(player => {
+            if (player.money >= additionalBet){
+                player.money -= additionalBet
+                player.bet += additionalBet
+            }
+            else {
+                let leftover = player.money
+                player.money -= leftover
+                player.bet += leftover
+            }
+        })
+        validNumberEntered = true
+    }
+
+    if (validNumberEntered)
+        nextStage()
+
+    render()
 
 })
 
@@ -333,6 +388,10 @@ function resetTable(){
     tableCards = []
     stage = 0
 
+    // prevent from going to game over status if there is only 1 player
+    if (numberOfPlayers == 1)
+        players[0].money = startingMoney
+
     for (let i=0; i<numberOfPlayers; i++){
 
         // reset hand rank of each player
@@ -374,11 +433,16 @@ function render(){
     checkButtonEl.disabled = false
     foldButtonEl.disabled = false
 
-    // disable raise button if you cannot raise the bet any more
-    if (players[0].bet > players[0].money)
+    // Fold button is enabled until all cards are shown
+    // If number of players == 1, fold and raise button is disabled
+    numberOfPlayers == 1 ? foldButtonEl.disabled = true : foldButtonEl.disabled = false
+    numberOfPlayers == 1 ? raiseButtonEl.disabled = true : raiseButtonEl.disabled = false
+
+    // disable fold and raise button if you cannot raise the bet any more (and no point in folding)
+    if (players[0].money == 0){
         raiseButtonEl.disabled = true
-    else
-        raiseButtonEl.disabled = false
+        foldButtonEl.disabled = true
+    }
 
     // Unhide player elements according to number of players you selected in the main menu
     if (numberOfPlayers > 1)
@@ -396,10 +460,6 @@ function render(){
     if (numberOfPlayers > 7)
         player7.hidden = false
 
-    // Fold button is enabled until all cards are shown
-    // If number of players == 1, fold button is disabled
-    numberOfPlayers == 1 ? foldButtonEl.disabled = true : foldButtonEl.disabled = false
-
     // Conditions for different "stages" of a poker round depending on how many cards are shown
     if (stage == 0)
         checkButtonEl.innerText = `Check`
@@ -415,6 +475,7 @@ function render(){
     if (stage > 3){ // reveal
 
         foldButtonEl.disabled = true
+        raiseButtonEl.disabled = true
         checkButtonEl.innerText = `Reset`
         findHandRanks()
 
@@ -443,17 +504,14 @@ function render(){
 
             if (heroWins){
                 checkButtonEl.disabled = true
-                foldButtonEl.disabled = true
                 raiseButtonEl.disabled = true
             }
 
         }
 
         // game over
-        if (players[0].money <= 0){
+        if (players[0].money <= 0)
             checkButtonEl.disabled = true
-            foldButtonEl.disabled = true
-        }
 
     }
 
