@@ -130,7 +130,6 @@ let players = [
     }
 ]
 let winningPlayers = []
-let gameOver = false
 let heroWins = false
 
 /*
@@ -148,7 +147,6 @@ mainMenuButtonEl.addEventListener(`click`, function(){
 startGameEl.addEventListener(`click`, function(){
 
     numberOfPlayers = playerNumberEl.value
-    gameOver = false
 
     players = [{
         name: 'Hero',
@@ -227,14 +225,11 @@ foldButtonEl.addEventListener(`click`, function(){
         if (numberOfPlayers > 1){
 
             let winningPlayer = Math.ceil(Math.random() * numberOfPlayers)
-
             winningPlayers.push(`Villain ${winningPlayer}`)
-
+            
             players.forEach(function(player){
-
                 if (winningPlayers.includes(player.name))
                     player.money += players.reduce((total, player) => total + player.bet, 0)
-        
             })
 
         }
@@ -287,6 +282,9 @@ function init(){
     player5El.hidden = true
     player6El.hidden = true
     player7El.hidden = true
+
+    // reset game winning status
+    heroWins = false
 
 }
 
@@ -444,14 +442,25 @@ function render(){
             if (winningPlayers.length > 1 && winningPlayers.includes(`Hero`))
                 winnersEl.style.color = `darkgoldenrod`
 
+            heroWins = true
+            players.forEach(function(player, idx){
+                if (player.money > 0 && idx != 0)
+                    heroWins = false
+            })
+
+            if (heroWins){
+                checkButtonEl.disabled = true
+                foldButtonEl.disabled = true
+                raiseButtonEl.disabled = true
+            }
+
         }
 
         // game over
         if (players[0].money <= 0){
-        checkButtonEl.disabled = true
-        foldButtonEl.disabled = true
-        gameOver = true
-    }
+            checkButtonEl.disabled = true
+            foldButtonEl.disabled = true
+        }
 
     }
 
@@ -548,7 +557,7 @@ function findHandRank(obj){
 // Executes findHandRank function on each player
 const findHandRanks = () => players.forEach(obj => {
     if (obj.card1 != null)
-    findHandRank(obj)
+        findHandRank(obj)
 })
 
 // Generic sorting function that sorts by number. Used in sort iterator methods
@@ -823,10 +832,8 @@ function determineScore(obj, hand, suits, ranks){
 
         validRanks = []
         hand.forEach(function(elem){
-
             if (elem.suit == matchingValue)
                 validRanks.push(elem.rank)
-
         })
         validRanks.sort((a, b) => sortingFunction(a, b))
 
@@ -865,10 +872,8 @@ function determineWinner(){
         }
         else{
             playersWon.forEach(function(drawnPlayers){
-
                 if (drawnPlayers.kicker == bestKicker)
                     winningPlayers.push(drawnPlayers.name)
-
             })
         }
 
