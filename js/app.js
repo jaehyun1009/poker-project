@@ -120,7 +120,7 @@ let stage = 0
 let startingMoney = 10000
 let numberOfPlayers
 let minimumBet
-let players
+let players = []
 let winningPlayers = []
 let heroWins = false
 
@@ -143,7 +143,7 @@ mainMenuButtonEl.addEventListener(`click`, function(){
 startGameEl.addEventListener(`click`, function(){
 
     numberOfPlayers = playerNumberEl.value
-    minimumBet = Math.round(startingMoney / (50 * numberOfPlayers))
+    minimumBet = Math.round(startingMoney / (20 * numberOfPlayers))
 
     players = [{
         name: 'Hero',
@@ -672,19 +672,19 @@ function isStraight(hand){
     const handNumVals = hand.map(obj => obj.rank)
 
     // sort handNumVals for less iterations of checking for straight flush
-    handNumVals.sort((a, b) => sortingFunction(a, b))
+    handNumVals.sort((a, b) => sortingFunction(a, b)).reverse()
 
-    // check each number to see if it contains hand numbers greater than it by 1, 2, 3, and 4 (or 9 checking for ace)
-    for (let i=0; i<4; i++){
+    // check the first three numbers to see if it contains hand numbers less than itself by 1, 2, 3, and 4 (and 12 if the first rank is a king)
+    for (let i=0; i<3; i++){
 
-        if (handNumVals.includes(handNumVals[i] + 1) &&
-            handNumVals.includes(handNumVals[i] + 2) &&
-            handNumVals.includes(handNumVals[i] + 3)){
+        if (handNumVals.includes(handNumVals[i] - 1) &&
+            handNumVals.includes(handNumVals[i] - 2) &&
+            handNumVals.includes(handNumVals[i] - 3)){
 
-            if (handNumVals.includes(handNumVals[i] + 4))
-                return handNumVals[i] + 4
-            else if (handNumVals.includes(handNumVals[i] - 9))
+            if (handNumVals[i] == Rank.KING && handNumVals.includes(handNumVals[i] - 12))
                 return Rank.ACE + Object.keys(Rank).length
+            if (handNumVals.includes(handNumVals[i] - 4))
+                return handNumVals[i]
 
         }
 
@@ -704,19 +704,19 @@ function isStraightFlush(hand){
     const handNumVals = hand.map(obj => ((obj.suit - 1) * suitBuffer) + obj.rank)
 
     // sort handNumVals for less iterations of checking for straight flush
-    handNumVals.sort((a, b) => sortingFunction(a, b))
+    handNumVals.sort((a, b) => sortingFunction(a, b)).reverse()
 
-    // check each number to see if it contains hand numbers greater than it by 1, 2, 3, and 4 (or 9 checking for ace)
-    for (let i=0; i<4; i++){
+    // check the first three numbers to see if it contains hand numbers less than itself by 1, 2, 3, and 4 (and 12 if the first rank is a king)
+    for (let i=0; i<3; i++){
 
-        if (handNumVals.includes(handNumVals[i] + 1) &&
-            handNumVals.includes(handNumVals[i] + 2) &&
-            handNumVals.includes(handNumVals[i] + 3)){
+        if (handNumVals.includes(handNumVals[i] - 1) &&
+            handNumVals.includes(handNumVals[i] - 2) &&
+            handNumVals.includes(handNumVals[i] - 3)){
 
-            if (handNumVals.includes(handNumVals[i] + 4))
-                return (handNumVals[i] + 4) % suitBuffer
-            else if (handNumVals.includes(handNumVals[i] - 9))
+            if (handNumVals[i] % suitBuffer == Rank.KING && handNumVals.includes(handNumVals[i] - 12)) // Royal Flush
                 return Rank.ACE
+            if (handNumVals.includes(handNumVals[i] - 4))
+                return handNumVals[i] % suitBuffer
 
         }
 
