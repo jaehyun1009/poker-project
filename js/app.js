@@ -72,7 +72,8 @@ const playerNumberEl = document.querySelector(`select`)
 
 // Game Buttons
 const buttonEls = document.querySelectorAll(`#buttons > button`)
-const turnButtonEl = document.getElementById(`turn`)
+const raiseButtonEl = document.getElementById(`raise`)
+const checkButtonEl = document.getElementById(`check`)
 const mainMenuButtonEl = document.getElementById(`goto-main`)
 const foldButtonEl = document.getElementById(`fold`)
 
@@ -113,10 +114,11 @@ let deck = []
 let tableCards = []
 let stage = 0
 let numberOfPlayers = 1
+let minimumBet = 10
 let players = [
     {
         name: 'Hero',
-        money: null,
+        money: 1000,
         blind: null,
         bet: null,
         card1: null,
@@ -148,7 +150,7 @@ startGameEl.addEventListener(`click`, function(){
         players.push(
             {
                 name: `Villain ${i}`,
-                money: null,
+                money: 1000,
                 blind: null,
                 bet: null,
                 card1: null,
@@ -165,7 +167,7 @@ startGameEl.addEventListener(`click`, function(){
 
 })
 
-turnButtonEl.addEventListener(`click`, function(){
+checkButtonEl.addEventListener(`click`, function(){
 
     switch (stage){
 
@@ -303,14 +305,19 @@ function resetTable(){
 
     for (let i=0; i<numberOfPlayers; i++){
 
-        // assign fresh hand to each player
-        players[i].card1 = deck.pop()
-        players[i].card2 = deck.pop()
-
         // reset hand rank of each player
         players[i].handRank = ``
         players[i].score = 0
         players[i].kicker = null
+
+        // assign fresh hand to each player if player has enough money
+        if (players[i].money > 0){            
+            players[i].card1 = deck.pop()
+            players[i].card2 = deck.pop()
+            players[i].money > minimumBet ? players[i].bet = minimumBet : players[i].bet = players[i].money
+        }
+        else
+            players[i]
 
     }
 
@@ -327,6 +334,12 @@ function render(){
     tableEl.hidden = false
     for (const buttonEl of buttonEls)
         buttonEl.hidden = false
+
+    // disable raise button if you cannot raise the bet any more
+    if (players[0].bet > (players[0].money - minimumBet))
+        raiseButtonEl.disabled = true
+    else
+        raiseButtonEl.disabled = false
 
     // Unhide player elements according to number of players you selected in the main menu
     if (numberOfPlayers > 1)
@@ -350,27 +363,21 @@ function render(){
 
     // Conditions for different "stages" of a poker round depending on how many cards are shown
     if (stage == 0)
-        turnButtonEl.innerText = `Flop`
+        checkButtonEl.innerText = `Check`
 
-    if (stage > 0){ // flop
+    if (stage > 0){
         tableCard0El.innerHTML = `<img width="60" height="90" src="./img/cards/${tableCards[0].rank}_${tableCards[0].suit}.png" alt="Table card slot 1">`
         tableCard1El.innerHTML = `<img width="60" height="90" src="./img/cards/${tableCards[1].rank}_${tableCards[1].suit}.png" alt="Table card slot 2">`
         tableCard2El.innerHTML = `<img width="60" height="90" src="./img/cards/${tableCards[2].rank}_${tableCards[2].suit}.png" alt="Table card slot 3">`
-        turnButtonEl.innerText = `Turn`
     }
-    if (stage > 1){ // turn
+    if (stage > 1) // turn
         tableCard3El.innerHTML = `<img width="60" height="90" src="./img/cards/${tableCards[3].rank}_${tableCards[3].suit}.png" alt="Table card slot 4">`
-        turnButtonEl.innerText = `River`
-    }
-    if (stage > 2){ // river
-
+    if (stage > 2) // river
         tableCard4El.innerHTML = `<img width="60" height="90" src="./img/cards/${tableCards[4].rank}_${tableCards[4].suit}.png" alt="Table card slot 5">`
-        turnButtonEl.innerText = `Reveal`
-    }
     if (stage > 3){ // reveal
 
         foldButtonEl.disabled = true
-        turnButtonEl.innerText = `Reset`
+        checkButtonEl.innerText = `Reset`
         findHandRanks()
 
         if (numberOfPlayers > 1){
@@ -385,11 +392,16 @@ function render(){
                 winnersEl.innerText = `\n\n\n\nDraw between: ${winnersText}`
             }
 
+            winningPlayers.includes(`Hero`) ? winnersEl.style.color = `blue` : winnersEl.style.color = `red`
+                
+            if (winningPlayers.length > 1 && winningPlayers.includes(`Hero`))
+                winnersEl.style.color = `darkgoldenrod`
+
         }
 
     }
 
-    // Render player hands
+    // Render player info
     for (let i=0; i<numberOfPlayers; i++){
         
         if (stage < 4 && i > 0){
@@ -402,6 +414,11 @@ function render(){
         }
 
         document.querySelector(`#player${i} > .hand-rank`).innerText = players[i].handRank
+
+        if (numberOfPlayers > 1) {
+            document.querySelector(`#player${i} > .money`).innerText = `Money: $${players[i].money}`
+            document.querySelector(`#player${i} > .bet`).innerText = `Bet: $${players[i].bet}`
+        }
 
     }
 
@@ -418,44 +435,15 @@ function findHandRank(obj){
 
     const suitCount = hand.reduce(
         function(suits, card){
-
             suits[card.suit]++
             return suits
-
-        }, 
-        {
-
-            1: 0,
-            2: 0,
-            3: 0,
-            4: 0
-    
-        })
+        }, {1:0, 2:0, 3:0, 4:0})
 
     const rankCount = hand.reduce(
         function(ranks, card){
-    
             ranks[card.rank]++
             return ranks
-    
-        }, 
-        {
-    
-            1: 0,
-            2: 0,
-            3: 0,
-            4: 0,
-            5: 0,
-            6: 0,
-            7: 0,
-            8: 0,
-            9: 0,
-            10: 0,
-            11: 0,
-            12: 0,
-            13: 0
-        
-        })
+        }, {1:0, 2:0, 3:0, 4:0, 5:0, 6:0, 7:0, 8:0, 9:0, 10:0, 11:0, 12:0, 13:0})
 
     if (isRoyalFlush(hand, rankCount)){
         obj.handRank = `Royal Flush`
@@ -603,9 +591,8 @@ isFullHouse = (ranks) => isThreeOfAKind(ranks) && isTwoPairs(ranks)
 // Strategy: See if there are any rank values greater than 1 (more than 1 card of same rank). If so, return true. If not, return false.
 isPair = (ranks) => Object.values(ranks).some(numRanks => numRanks > 1)
 
-/*
-
-*/
+// Gives each player a point value depending on how strong their hand is.
+// Hand rank takes precedence, then each card's rank value that satisfies that hand is added to calculation.
 function determineScore(obj, hand, suits, ranks){
 
     // map each card to an array of rank values
@@ -619,6 +606,7 @@ function determineScore(obj, hand, suits, ranks){
 
     })
 
+    // Sort handNumVals for easier computation
     handNumVals.sort((a, b) => sortingFunction(a, b))
 
     if (obj.handRank == `High Card`){
@@ -761,11 +749,6 @@ function determineScore(obj, hand, suits, ranks){
         if (matchingValue3 && matchingValue2 != 14) // Rank.ACE + Object.keys(Rank).length
             matchingValue2 = matchingValue3
 
-        // generate kicker using filter
-        obj.kicker = handNumVals.filter(rankVal => rankVal != matchingValue1 && rankVal != matchingValue2)
-        obj.kicker.shift()
-        obj.kicker.shift()
-
         obj.score += matchingValue1 * buffer + matchingValue2
 
     }
@@ -810,15 +793,15 @@ function determineWinner(){
     const scores = players.map(player => player.score)
     const bestScore = Math.max(...scores)
 
-    const playersWon = players.filter(player2 => player2.score == bestScore)
+    const playersWon = players.filter(player => player.score == bestScore)
 
     if (playersWon.length > 1){
 
         const kickers = playersWon.map(player => player.kicker)
         const bestKicker = Math.max(...kickers)
 
-        if (playersWon[0].handRank == `Straight`){
-            winningPlayers = playersWon.map(player3 => player3.name)
+        if (playersWon[0].handRank == `Straight` || playersWon[0].handRank == `Full House`){
+            winningPlayers = playersWon.map(player => player.name)
         }
         else{
             playersWon.forEach(function(drawnPlayers){
@@ -831,7 +814,19 @@ function determineWinner(){
 
     }
     else
-        winningPlayers = playersWon.map(player4 => player4.name)
+        winningPlayers = playersWon.map(player => player.name)
+
+    let totalBet = players.reduce((total, player) => total + player.bet, 0)
+    totalBet /= winningPlayers.length
+
+    players.forEach(function(player){
+
+        if (winningPlayers.includes(player.name))
+            player.money += totalBet
+        else
+            player.money -= player.bet
+
+    })
 
 }
 
