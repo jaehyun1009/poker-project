@@ -114,13 +114,14 @@ let deck = []
 let tableCards = []
 let stage = 0
 let numberOfPlayers = 1
-let minimumBet = 10
+let startingMoney = 1000
+let minimumBet = 500
 let players = [
     {
         name: 'Hero',
-        money: 1000,
+        money: startingMoney,
         blind: null,
-        bet: null,
+        bet: 0,
         card1: null,
         card2: null,
         handRank: null,
@@ -129,6 +130,8 @@ let players = [
     }
 ]
 let winningPlayers = []
+let gameOver = false
+let heroWins = false
 
 /*
 
@@ -145,21 +148,32 @@ mainMenuButtonEl.addEventListener(`click`, function(){
 startGameEl.addEventListener(`click`, function(){
 
     numberOfPlayers = playerNumberEl.value
+    gameOver = false
+
+    players = [{
+        name: 'Hero',
+        money: startingMoney,
+        blind: null,
+        bet: 0,
+        card1: null,
+        card2: null,
+        handRank: null,
+        score: 0,
+        kicker: null
+    }]
 
     for (let i=1; i<numberOfPlayers; i++){
-        players.push(
-            {
+        players.push({
                 name: `Villain ${i}`,
-                money: 1000,
+                money: startingMoney,
                 blind: null,
-                bet: null,
+                bet: 0,
                 card1: null,
                 card2: null,
                 handRank: null,
-                score: null,
+                score: 0,
                 kicker: null
-            }
-        )
+        })
     }
 
     resetTable()
@@ -171,7 +185,7 @@ checkButtonEl.addEventListener(`click`, function(){
 
     switch (stage){
 
-        case 0:
+        case 0: // flop
             stage = 1
             deck.pop() // burn card
             tableCards.push(deck.pop())
@@ -179,23 +193,23 @@ checkButtonEl.addEventListener(`click`, function(){
             tableCards.push(deck.pop())
             break
 
-        case 1:
+        case 1: // turn
             stage = 2
             deck.pop()
             tableCards.push(deck.pop())
             break
 
-        case 2:
+        case 2: // river
             numberOfPlayers == 1 ? stage = 4 : stage = 3
             deck.pop()
             tableCards.push(deck.pop())
             break
 
-        case 3:
+        case 3: // final round of bet
             stage = 4
             break
 
-        default: // case 4
+        default:
             stage = 0
             resetTable()
             break
@@ -209,8 +223,25 @@ checkButtonEl.addEventListener(`click`, function(){
 foldButtonEl.addEventListener(`click`, function(){
 
     if (window.confirm(`Are you sure you want to give up your hand?`)){
+
+        if (numberOfPlayers > 1){
+
+            let winningPlayer = Math.ceil(Math.random() * numberOfPlayers)
+
+            winningPlayers.push(`Villain ${winningPlayer}`)
+
+            players.forEach(function(player){
+
+                if (winningPlayers.includes(player.name))
+                    player.money += players.reduce((total, player) => total + player.bet, 0)
+        
+            })
+
+        }
+
         resetTable()
         render()
+
     }
 
 })
@@ -308,16 +339,26 @@ function resetTable(){
         // reset hand rank of each player
         players[i].handRank = ``
         players[i].score = 0
+        players[i].card1 = null
+        players[i].card2 = null
         players[i].kicker = null
 
         // assign fresh hand to each player if player has enough money
-        if (players[i].money > 0){            
+        if (players[i].money > 0){
             players[i].card1 = deck.pop()
             players[i].card2 = deck.pop()
+            console.log(i, players[i].card1, players[i].card2)
             players[i].money > minimumBet ? players[i].bet = minimumBet : players[i].bet = players[i].money
+            players[i].money -= players[i].bet
         }
-        else
-            players[i]
+        else{
+            players[i].bet = 0
+            document.getElementById(`pl${i}-cd1`).innerHTML = ``
+            document.getElementById(`pl${i}-cd2`).innerHTML = ``
+            document.querySelector(`#player${i} > .hand-rank`).innerText = `Game Over`
+            document.querySelector(`#player${i} > .money`).innerText = `Money: $${players[i].money}`
+            document.querySelector(`#player${i} > .bet`).innerText = `Bet: $${players[i].bet}`
+        }
 
     }
 
@@ -335,8 +376,12 @@ function render(){
     for (const buttonEl of buttonEls)
         buttonEl.hidden = false
 
+    // re-enable check and fold buttons if you are restarting from game over
+    checkButtonEl.disabled = false
+    foldButtonEl.disabled = false
+
     // disable raise button if you cannot raise the bet any more
-    if (players[0].bet > (players[0].money - minimumBet))
+    if (players[0].bet > players[0].money)
         raiseButtonEl.disabled = true
     else
         raiseButtonEl.disabled = false
@@ -382,6 +427,8 @@ function render(){
 
         if (numberOfPlayers > 1){
 
+            console.log(tableCards)
+
             determineWinner()
 
             if (winningPlayers.length == 1){
@@ -399,6 +446,13 @@ function render(){
 
         }
 
+        // game over
+        if (players[0].money <= 0){
+        checkButtonEl.disabled = true
+        foldButtonEl.disabled = true
+        gameOver = true
+    }
+
     }
 
     // Render player info
@@ -409,11 +463,14 @@ function render(){
             document.getElementById(`pl${i}-cd2`).innerHTML = `<img width="60" height="90" src="./img/cards/back.png" alt="Table card slot 1">`
         }
         else {
-            document.getElementById(`pl${i}-cd1`).innerHTML = `<img width="60" height="90" src="./img/cards/${players[i].card1.rank}_${players[i].card1.suit}.png" alt="Table card slot ${i+1}">`
-            document.getElementById(`pl${i}-cd2`).innerHTML = `<img width="60" height="90" src="./img/cards/${players[i].card2.rank}_${players[i].card2.suit}.png" alt="Table card slot ${i+1}">`
+            if (players[i].card1 != null){
+                document.getElementById(`pl${i}-cd1`).innerHTML = `<img width="60" height="90" src="./img/cards/${players[i].card1.rank}_${players[i].card1.suit}.png" alt="Table card slot ${i+1}">`
+                document.getElementById(`pl${i}-cd2`).innerHTML = `<img width="60" height="90" src="./img/cards/${players[i].card2.rank}_${players[i].card2.suit}.png" alt="Table card slot ${i+1}">`
+            }
         }
-
-        document.querySelector(`#player${i} > .hand-rank`).innerText = players[i].handRank
+        
+        if (players[i].money > 0)
+            document.querySelector(`#player${i} > .hand-rank`).innerText = players[i].handRank
 
         if (numberOfPlayers > 1) {
             document.querySelector(`#player${i} > .money`).innerText = `Money: $${players[i].money}`
@@ -489,7 +546,10 @@ function findHandRank(obj){
 }
 
 // Executes findHandRank function on each player
-const findHandRanks = () => players.forEach(obj => findHandRank(obj))
+const findHandRanks = () => players.forEach(obj => {
+    if (obj.card1 != null)
+    findHandRank(obj)
+})
 
 // Generic sorting function that sorts by number. Used in sort iterator methods
 sortingFunction = (a, b) => {
@@ -823,8 +883,8 @@ function determineWinner(){
 
         if (winningPlayers.includes(player.name))
             player.money += totalBet
-        else
-            player.money -= player.bet
+
+        player.bet = 0
 
     })
 
