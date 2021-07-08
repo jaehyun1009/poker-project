@@ -1,8 +1,10 @@
 /*
+
     Constants
     Suit: Suit of card
     Rank: Rank of card
     Card: Suit and Rank representing a playing card
+
 */
 
 // Numbers that represent suit of a playing card
@@ -227,7 +229,7 @@ checkButtonEl.addEventListener(`click`, function(){
 // Alerts the user towards making correct amount of bet.
 raiseButtonEl.addEventListener(`click`, function(){
 
-    let additionalBet = parseInt(prompt(`How much do you want to increase your bet by?\nMinimum bet: ${minimumBet} or all-in\nNote: Decimal inputs are rounded down.`))
+    let additionalBet = parseInt(prompt(`How much do you want to increase your bet by?\nMinimum bet: ${minimumBet} (All-in is OK)\nNote: Decimal inputs are rounded down.`))
 
     // Function to properly change player's bet and money amounts after additional bet is made
     const bet = (player) => {
@@ -546,6 +548,10 @@ function render(){
             document.querySelector(`#player${i} > .money`).innerText = `Money: $${players[i].money}`
             document.querySelector(`#player${i} > .bet`).innerText = `Bet: $${players[i].bet}`
         }
+        else{
+            document.querySelector(`#player${i} > .money`).innerText = ``
+            document.querySelector(`#player${i} > .bet`).innerText = ``
+        }
 
     }
 
@@ -560,18 +566,19 @@ function findHandRank(obj){
     hand.push(obj.card1)
     hand.push(obj.card2)
 
-    const suitCount = hand.reduce(
-        function(suits, card){
-            suits[card.suit]++
-            return suits
-        }, {1:0, 2:0, 3:0, 4:0})
-
-    const rankCount = hand.reduce(
-        function(ranks, card){
+    // Reduce hand suits and cards to a key:value pair containing how many instances of certain suit/value a hand has.
+    // This results in easier time looking for hand ranks using other array iterator methods.
+    const suitCount = hand.reduce(function(suits, card){
+        suits[card.suit]++
+        return suits
+    }, {1:0, 2:0, 3:0, 4:0})
+    const rankCount = hand.reduce(function(ranks, card){
             ranks[card.rank]++
             return ranks
-        }, {1:0, 2:0, 3:0, 4:0, 5:0, 6:0, 7:0, 8:0, 9:0, 10:0, 11:0, 12:0, 13:0})
+    }, {1:0, 2:0, 3:0, 4:0, 5:0, 6:0, 7:0, 8:0, 9:0, 10:0, 11:0, 12:0, 13:0})
 
+    // Checks for each hand rank condition using findHandRank helper functions
+    // Goes through higher hand ranks first so that points are distributed properly
     if (isRoyalFlush(hand, rankCount)){
         obj.handRank = `Royal Flush`
         obj.score = 9001
@@ -611,6 +618,7 @@ function findHandRank(obj){
     else // high card
         obj.handRank = `High Card`
 
+    // Determine score of a hand for finding a winner between same hands
     determineScore(obj, hand, suitCount, rankCount)
 
 }
@@ -651,6 +659,7 @@ function isStraight(hand){
     // map each card to an array of rank values
     const handNumVals = hand.map(obj => obj.rank)
 
+    // sort handNumVals for less iterations of checking for straight flush
     handNumVals.sort((a, b) => sortingFunction(a, b))
 
     // check each number to see if it contains hand numbers greater than it by 1, 2, 3, and 4 (or 9 checking for ace)
@@ -682,6 +691,7 @@ function isStraightFlush(hand){
     let suitBuffer = 100
     const handNumVals = hand.map(obj => ((obj.suit - 1) * suitBuffer) + obj.rank)
 
+    // sort handNumVals for less iterations of checking for straight flush
     handNumVals.sort((a, b) => sortingFunction(a, b))
 
     // check each number to see if it contains hand numbers greater than it by 1, 2, 3, and 4 (or 9 checking for ace)
@@ -747,6 +757,7 @@ function determineScore(obj, hand, suits, ranks){
 
     }
 
+    // Unified helper function to 
     const pairMatch = (num) => {
 
         let matchingValue
@@ -787,14 +798,12 @@ function determineScore(obj, hand, suits, ranks){
         let buffer = 50
 
         for (const key in ranks){
-
             if (ranks[key] == 2 && !matchingValue1)
                 matchingValue1 = parseInt(key)
             else if (ranks[key] == 2 && !matchingValue2)
                 matchingValue2 = parseInt(key)
             else if (ranks[key] == 2 && !matchingValue3)
                 matchingValue3 = parseInt(key)
-
         }
 
         if (matchingValue3 != 0 && matchingValue1 != Rank.ACE)
@@ -822,23 +831,19 @@ function determineScore(obj, hand, suits, ranks){
         let buffer = 50
 
         for (const key in ranks){
-
             if (ranks[key] == 3 && !matchingValue1)
                 matchingValue1 = parseInt(key)
             else if (ranks[key] == 3 && !matchingValue2)
                 matchingValue2 = parseInt(key)
-
         }
 
         if (matchingValue2 == 0){
 
             for (const key in ranks){
-
                 if (ranks[key] == 2 && !matchingValue2)
                     matchingValue2 = parseInt(key)
                 else if (ranks[key] == 2 && !matchingValue3)
                     matchingValue3 = parseInt(key)
-
             }
 
         }
