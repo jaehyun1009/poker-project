@@ -83,6 +83,7 @@ const tableCard1El = document.getElementById(`table-card-1`)
 const tableCard2El = document.getElementById(`table-card-2`)
 const tableCard3El = document.getElementById(`table-card-3`)
 const tableCard4El = document.getElementById(`table-card-4`)
+const winnersEl = document.querySelector(`h3`)
 
 // Player Elements
 const player1El = document.getElementById(`player1`)
@@ -122,9 +123,10 @@ let players = [
         card2: null,
         handRank: null,
         score: 0,
-        kickers: null
+        kicker: null
     }
 ]
+let winningPlayers = []
 
 /*
 
@@ -153,7 +155,7 @@ startGameEl.addEventListener(`click`, function(){
                 card2: null,
                 handRank: null,
                 score: null,
-                kickers: null
+                kicker: null
             }
         )
     }
@@ -291,6 +293,7 @@ function resetTable(){
     tableCard2El.innerHTML = ``
     tableCard3El.innerHTML = ``
     tableCard4El.innerHTML = ``
+    winnersEl.innerText = ``
 
     // Reshuffle deck and reset game state
     newDeck()
@@ -307,9 +310,11 @@ function resetTable(){
         // reset hand rank of each player
         players[i].handRank = ``
         players[i].score = 0
-        players[i].kickers = null
+        players[i].kicker = null
 
     }
+
+    winningPlayers = []
 
 }
 
@@ -367,7 +372,20 @@ function render(){
         foldButtonEl.disabled = true
         turnButtonEl.innerText = `Reset`
         findHandRanks()
-        determineWinner()
+
+        if (numberOfPlayers > 1){
+
+            determineWinner()
+
+            if (winningPlayers.length == 1){
+                winnersEl.innerText = `\n\n\n\n${winningPlayers[0]} wins`
+            }
+            else {
+                winnersText = winningPlayers.join(`, `)
+                winnersEl.innerText = `\n\n\n\nDraw between: ${winnersText}`
+            }
+
+        }
 
     }
 
@@ -383,7 +401,7 @@ function render(){
             document.getElementById(`pl${i}-cd2`).innerHTML = `<img width="60" height="90" src="./img/cards/${players[i].card2.rank}_${players[i].card2.suit}.png" alt="Table card slot ${i+1}">`
         }
 
-        document.querySelector(`#player${i} > .hand-rank`).innerText = players[i].handRank + `\n(${players[i].score})`
+        document.querySelector(`#player${i} > .hand-rank`).innerText = players[i].handRank
 
     }
 
@@ -607,8 +625,8 @@ function determineScore(obj, hand, suits, ranks){
 
         obj.score += handNumVals.pop()
 
-        // set kickers to remaining best 4 numbers
-        obj.kickers = handNumVals.slice(2, handNumVals.length)
+        // set kicker to remaining best 4 numbers
+        obj.kicker = handNumVals.slice(2, handNumVals.length)
 
     }
 
@@ -623,10 +641,10 @@ function determineScore(obj, hand, suits, ranks){
         if (matchingValue == Rank.ACE)
             matchingValue += Object.keys(Rank).length
 
-        // generate kickers using filter
-        obj.kickers = handNumVals.filter(rankVal => rankVal != matchingValue)
-        obj.kickers.shift()
-        obj.kickers.shift()
+        // generate kicker using filter
+        obj.kicker = handNumVals.filter(rankVal => rankVal != matchingValue)
+        obj.kicker.shift()
+        obj.kicker.shift()
 
         obj.score += matchingValue
 
@@ -643,10 +661,10 @@ function determineScore(obj, hand, suits, ranks){
         if (matchingValue == Rank.ACE)
             matchingValue += Object.keys(Rank).length
 
-        // generate kickers using filter
-        obj.kickers = handNumVals.filter(rankVal => rankVal != matchingValue)
-        obj.kickers.shift()
-        obj.kickers.shift()
+        // generate kicker using filter
+        obj.kicker = handNumVals.filter(rankVal => rankVal != matchingValue)
+        obj.kicker.shift()
+        obj.kicker.shift()
 
         obj.score += matchingValue
 
@@ -663,10 +681,10 @@ function determineScore(obj, hand, suits, ranks){
         if (matchingValue == Rank.ACE)
             matchingValue += Object.keys(Rank).length
 
-        // generate kickers using filter
-        obj.kickers = handNumVals.filter(rankVal => rankVal != matchingValue)
-        obj.kickers.shift()
-        obj.kickers.shift()
+        // generate kicker using filter
+        obj.kicker = handNumVals.filter(rankVal => rankVal != matchingValue)
+        obj.kicker.shift()
+        obj.kicker.shift()
 
         obj.score += matchingValue
 
@@ -695,10 +713,10 @@ function determineScore(obj, hand, suits, ranks){
         if (matchingValue1 == Rank.ACE)
             matchingValue1 += Object.keys(Rank).length
 
-        // generate kickers using filter
-        obj.kickers = handNumVals.filter(rankVal => rankVal != matchingValue1 && rankVal != matchingValue2)
-        obj.kickers.shift()
-        obj.kickers.shift()
+        // generate kicker using filter
+        obj.kicker = handNumVals.filter(rankVal => rankVal != matchingValue1 && rankVal != matchingValue2)
+        obj.kicker.shift()
+        obj.kicker.shift()
 
         if (matchingValue1 > matchingValue2)
             obj.score += matchingValue1 * buffer + matchingValue2
@@ -743,10 +761,10 @@ function determineScore(obj, hand, suits, ranks){
         if (matchingValue3 && matchingValue2 != 14) // Rank.ACE + Object.keys(Rank).length
             matchingValue2 = matchingValue3
 
-        // generate kickers using filter
-        obj.kickers = handNumVals.filter(rankVal => rankVal != matchingValue1 && rankVal != matchingValue2)
-        obj.kickers.shift()
-        obj.kickers.shift()
+        // generate kicker using filter
+        obj.kicker = handNumVals.filter(rankVal => rankVal != matchingValue1 && rankVal != matchingValue2)
+        obj.kicker.shift()
+        obj.kicker.shift()
 
         obj.score += matchingValue1 * buffer + matchingValue2
 
@@ -769,8 +787,20 @@ function determineScore(obj, hand, suits, ranks){
         })
         validRanks.sort((a, b) => sortingFunction(a, b))
 
-        obj.kickers = validRanks.slice(validRanks.length - 5, validRanks.length)
+        obj.kicker = validRanks.slice(validRanks.length - 5, validRanks.length)
 
+    }
+
+    if (obj.kicker != null){
+        const reverseKicker = obj.kicker.reverse()
+        obj.kicker = parseInt(reverseKicker.reduce(function(stringNum, val){
+
+            if (val < 10)
+                val = "0" + val
+
+            return stringNum + val
+
+        },""))
     }
 
 }
@@ -780,14 +810,28 @@ function determineWinner(){
     const scores = players.map(player => player.score)
     const bestScore = Math.max(...scores)
 
-    console.log(scores)
-    console.log(bestScore)
+    const playersWon = players.filter(player2 => player2.score == bestScore)
 
-    const winningPlayers = players.filter(player2 => player2.score == bestScore)
-    const winningNames = winningPlayers.map(player3 => player3.name)
-    
-    console.log(winningPlayers)
-    console.log(winningNames)
+    if (playersWon.length > 1){
+
+        const kickers = playersWon.map(player => player.kicker)
+        const bestKicker = Math.max(...kickers)
+
+        if (playersWon[0].handRank == `Straight`){
+            winningPlayers = playersWon.map(player3 => player3.name)
+        }
+        else{
+            playersWon.forEach(function(drawnPlayers){
+
+                if (drawnPlayers.kicker == bestKicker)
+                    winningPlayers.push(drawnPlayers.name)
+
+            })
+        }
+
+    }
+    else
+        winningPlayers = playersWon.map(player4 => player4.name)
 
 }
 
