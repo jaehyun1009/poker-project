@@ -946,7 +946,9 @@ function determineWinner(){
         const bestKicker = Math.max(...kickers)
 
         // If hand ranks are straight and full house, there are no kickers, therefore game is a draw.
-        if (playersWon[0].handRank == `Straight` || playersWon[0].handRank == `Full House`){
+        // Added Straight Flush and Royal Flush here as well, just in case those cards are on the board to make a draw.
+        if (playersWon[0].handRank == `Straight` || playersWon[0].handRank == `Full House` || 
+            playersWon[0].handRank == `Straight Flush` || playersWon[0].handRank == `Royal Flush`){
             winningPlayers = playersWon.map(player => player.name)
         }
         else{
