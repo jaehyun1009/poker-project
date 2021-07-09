@@ -159,7 +159,7 @@ changeModeEl.addEventListener(`click`, function(){
 
         // Update face down cards
         for (let i=1; i<numberOfPlayers; i++){
-            if (stage < 4 && player[i].cards1 != null) {
+            if (stage < 4 && players[i].card1 != null) {
                 document.getElementById(`pl${i}-cd1`).innerHTML = `<img width="60" height="90" src="./img/cards/purple_back.png" alt="Table card slot 1">`
                 document.getElementById(`pl${i}-cd2`).innerHTML = `<img width="60" height="90" src="./img/cards/purple_back.png" alt="Table card slot 1">`
             }
@@ -185,7 +185,7 @@ changeModeEl.addEventListener(`click`, function(){
 
         // Update face down cards
         for (let i=1; i<numberOfPlayers; i++){
-            if (stage < 4 && player[i].cards1 != null) {
+            if (stage < 4 && players[i].card1 != null) {
                 document.getElementById(`pl${i}-cd1`).innerHTML = `<img width="60" height="90" src="./img/cards/blue_back.png" alt="Table card slot 1">`
                 document.getElementById(`pl${i}-cd2`).innerHTML = `<img width="60" height="90" src="./img/cards/blue_back.png" alt="Table card slot 1">`
             }
