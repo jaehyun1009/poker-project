@@ -512,10 +512,10 @@ function render(){
                 resultsEl.innerText = `\n\n\n\nDraw between: ${winnersText}`
             }
 
-            winningPlayers.includes(`Hero`) ? resultsEl.style.color = `blue` : resultsEl.style.color = `red`
+            winningPlayers.includes(`Hero`) ? resultsEl.style.color = `blue` : resultsEl.style.color = `firebrick`
                 
             if (winningPlayers.length > 1 && winningPlayers.includes(`Hero`))
-                resultsEl.style.color = `darkgoldenrod`
+                resultsEl.style.color = `yellow`
 
             // Check to see if the hero player is the last player standing. If so, you win!
             heroWins = true
@@ -537,7 +537,7 @@ function render(){
         // Game over. Disable check button.
         if (players[0].money <= 0){
             checkButtonEl.disabled = true
-            winnersEl.style.color = `red`
+            winnersEl.style.color = `firebrick`
             winnersEl.innerText = `Game Over!`
             gameOver = true
         }

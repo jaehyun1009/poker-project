@@ -62,7 +62,7 @@ h2 {
 
     font-size: 32px;
     text-align: center;
-    width: 450px;
+    width: 400px;
     margin: 0 auto;
     position: absolute;
     top: 15%;
@@ -76,7 +76,7 @@ h3 {
 
     font-size: 24px;
     text-align: center;
-    width: 450px;
+    width: 400px;
     margin: 0 auto;
     position: absolute;
     top: 65%;
@@ -150,10 +150,11 @@ button:hover:not([disabled]) {
 
 #table {
 
-    background-color: limegreen;
+    background: radial-gradient(limegreen, forestgreen);
     border-style: solid;
-    border-color: maroon;
-    border-radius: 100px;
+    border-color: rgb(85, 85, 85);
+    border-radius: 175px;
+    border-width: 15px;
     margin: 0;
     width: 650px;
     height: 300px;
@@ -245,7 +246,7 @@ button:hover:not([disabled]) {
 #player0 {
 
     border-color: cornflowerblue;
-    top: 105%;
+    top: 106%;
     right: 35%;
 
 }
@@ -253,7 +254,7 @@ button:hover:not([disabled]) {
 #player1 {
 
     border-color: gold;
-    top: -74%;
+    top: -75%;
     right: 35%;
 
 }
@@ -277,7 +278,7 @@ button:hover:not([disabled]) {
 #player4 {
 
     border-color: thistle;
-    top: 105%;
+    top: 106%;
     right: 65%;
 
 }
@@ -285,7 +286,7 @@ button:hover:not([disabled]) {
 #player5 {
 
     border-color: fuchsia;
-    top: -74%;
+    top: -75%;
     right: 5%;
 
 }
@@ -293,7 +294,7 @@ button:hover:not([disabled]) {
 #player6 {
 
     border-color: cadetblue;
-    top: 105%;
+    top: 106%;
     right: 5%;
 
 }
@@ -301,7 +302,7 @@ button:hover:not([disabled]) {
 #player7 {
 
     border-color: aquamarine;
-    top: -74%;
+    top: -75%;
     right: 65%;
 
 }
