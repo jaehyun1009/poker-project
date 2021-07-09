@@ -12,9 +12,10 @@ DISCLAIMER: Do not play online for money unless you know what you're doing!
 
 https://www.partypoker.com/en/how-to-play/texas-holdem
 
-## How this application works
-LINK: https://jaehyun1009.github.io/poker-project/
+## Link to Project
+https://jaehyun1009.github.io/poker-project/
 
+## How this application works
 ### Main Menu
 About: Clicking this will direct the user to this page.
 
