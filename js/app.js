@@ -135,7 +135,7 @@ let darkMode = false
     Event Listeners
 
 */
-// When the text on top right is clicked, change to dark mode
+// When the text on top right is clicked, change between light/dark mode.
 changeModeEl.addEventListener(`click`, function(){
     
     const imageEls = document.querySelectorAll(`#title > img`)
