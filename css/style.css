@@ -3,6 +3,15 @@
 body {
 
     font-family: 'Marcellus', sans-serif;
+    background-color: white;
+    color: black;
+
+}
+
+body.dark-mode {
+
+    background-color: black;
+    color: white;
 
 }
 
@@ -22,14 +31,14 @@ body {
 
 @keyframes flash {
     from {color: goldenrod;}
-    to {color: black;}
+    to {color: lightslategrey;}
 }
 
 #main-menu:hover{
 
     border-color: goldenrod;
     animation-name: flash;
-    animation-duration: 0.5s;
+    animation-duration: 0.4s;
     animation-timing-function: linear;
     animation-iteration-count: infinite;
     animation-direction: alternate;
@@ -49,6 +58,14 @@ body {
 
     width: 296px;
     height: 222px;
+
+}
+
+#title > img.dark-mode {
+
+    width: 150px;
+    height: 150px;
+    padding: 36px 72px;
 
 }
 
@@ -127,6 +144,13 @@ button {
     font-size: 56px;
     font-family: 'Marcellus', sans-serif;
     background-color: transparent;
+    color: black;
+
+}
+
+button.dark-mode {
+
+    color: white;
 
 }
 
@@ -136,9 +160,34 @@ button:hover:not([disabled]) {
 
 }
 
+button.dark-mode:hover:not([disabled]) {
+
+    color: chartreuse;
+
+}
+
+button:disabled{
+
+    color: silver;
+
+}
+
+button.dark-mode:disabled{
+
+    color: darkslategrey;
+
+}
+
 #start-game:hover:not([disabled]){
 
     color: goldenrod;
+
+}
+
+#change-mode {
+
+    font-size: 24px;
+    float: right;
 
 }
 

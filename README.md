@@ -33,6 +33,9 @@ Check: See the next card, or reveal all villains' cards after last table card is
 
 Main Menu: Directs the user back to main menu. Will reset all game state.
 
+## Light/Dark Mode
+Available in both Main Menu and Game Menu. Clicking it inverses text and background colors, buttons have new hover colors, face down cards turn purple, and main menu screen's spinning poker chip changes to spinning coin.
+
 ### Technologies Used
 - Javascript (ES6)
 - HTML5
@@ -92,4 +95,6 @@ Example problem: Compare these kickers and determine the highest one: [10, 11, 1
 ## Resources
 Spinning poker chip image: https://dribbble.com/shots/3151889-Poker-Chip-Spin
 
-Images of 52 playing cards: http://acbl.mybigcommerce.com/52-playing-cards/
+Gold coin image: https://99designs.com/other-art-illustration/contests/simple-very-straight-forward-d-gold-coin-animation-438878
+
+Images of 52 playing cards and face-down cards: http://acbl.mybigcommerce.com/52-playing-cards/

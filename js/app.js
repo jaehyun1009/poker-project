@@ -66,8 +66,10 @@ class Card{
 const mainMenuEl = document.getElementById(`main-menu`)
 const startGameEl = document.getElementById(`start-game`)
 const playerNumberEl = document.querySelector(`select`)
+const changeModeEl = document.getElementById(`change-mode`)
 
 // Game Buttons
+const allButtonEls = document.querySelectorAll(`button`)
 const buttonEls = document.querySelectorAll(`#buttons > button`)
 const raiseButtonEl = document.getElementById(`raise`)
 const checkButtonEl = document.getElementById(`check`)
@@ -126,12 +128,73 @@ let players = []
 let winningPlayers = []
 let heroWins = false
 let gameOver = false
+let darkMode = false
 
 /*
 
     Event Listeners
 
 */
+// When the text on top right is clicked, change to dark mode
+changeModeEl.addEventListener(`click`, function(){
+    
+    const imageEls = document.querySelectorAll(`#title > img`)
+
+    if (!darkMode){
+
+        darkMode = true
+        changeModeEl.innerText = `Light Mode`
+
+        // Give dark-mode class to body and all buttons
+        document.body.classList.add(`dark-mode`)
+        changeModeEl.classList.add(`dark-mode`)
+        
+        for (const buttonEl of allButtonEls)
+            buttonEl.classList.add(`dark-mode`)
+
+        for (const imageEl of imageEls){
+            imageEl.src = "./img/gold-coin.gif" // change main page spinning image
+            imageEl.classList.add(`dark-mode`)
+        }
+
+        // Update face down cards
+        for (let i=1; i<numberOfPlayers; i++){
+            if (stage < 4 && player[i].cards1 != null) {
+                document.getElementById(`pl${i}-cd1`).innerHTML = `<img width="60" height="90" src="./img/cards/purple_back.png" alt="Table card slot 1">`
+                document.getElementById(`pl${i}-cd2`).innerHTML = `<img width="60" height="90" src="./img/cards/purple_back.png" alt="Table card slot 1">`
+            }
+        }
+
+    }
+    else { // darkMode == true
+
+        darkMode = false
+        changeModeEl.innerText = `Dark Mode`
+
+        // Remove dark-mode class from body and all buttons
+        document.body.classList.remove(`dark-mode`)
+        changeModeEl.classList.remove(`dark-mode`)
+
+        for (const buttonEl of allButtonEls)
+            buttonEl.classList.remove(`dark-mode`)
+
+        for (const imageEl of imageEls){
+            imageEl.src = "./img/poker-chip.gif" // change main page spinning image
+            imageEl.classList.remove(`dark-mode`)
+        }
+
+        // Update face down cards
+        for (let i=1; i<numberOfPlayers; i++){
+            if (stage < 4 && player[i].cards1 != null) {
+                document.getElementById(`pl${i}-cd1`).innerHTML = `<img width="60" height="90" src="./img/cards/blue_back.png" alt="Table card slot 1">`
+                document.getElementById(`pl${i}-cd2`).innerHTML = `<img width="60" height="90" src="./img/cards/blue_back.png" alt="Table card slot 1">`
+            }
+        }
+
+    }
+
+})
+
 // Triggered when main menu button is pressed to go back to the main menu.
 // Alerts the user if they really want to go back to prevent players from accidentally going back to the main menu.
 mainMenuButtonEl.addEventListener(`click`, function(){
@@ -337,6 +400,16 @@ function init(){
     tableEl.hidden = true
     for (const buttonEl of buttonEls)
         buttonEl.hidden = true
+
+    // Prevents start button from melding with background
+    if (darkMode){
+        startGameEl.classList.remove(`dark-mode`)
+        startGameEl.classList.add(`dark-mode`)
+    }
+    else { // darkMode == false
+        startGameEl.classList.add(`dark-mode`)
+        startGameEl.classList.remove(`dark-mode`)
+    }
 
     // reset all players other than you
     players.length = 1
@@ -552,8 +625,14 @@ function render(){
             document.getElementById(`pl${i}-cd2`).innerHTML = ``
         }
         else if (stage < 4 && i > 0){ // display cards face down for villains before the reveal phase
-            document.getElementById(`pl${i}-cd1`).innerHTML = `<img width="60" height="90" src="./img/cards/back.png" alt="Table card slot 1">`
-            document.getElementById(`pl${i}-cd2`).innerHTML = `<img width="60" height="90" src="./img/cards/back.png" alt="Table card slot 1">`
+            if (darkMode){
+                document.getElementById(`pl${i}-cd1`).innerHTML = `<img width="60" height="90" src="./img/cards/purple_back.png" alt="Table card slot 1">`
+                document.getElementById(`pl${i}-cd2`).innerHTML = `<img width="60" height="90" src="./img/cards/purple_back.png" alt="Table card slot 1">`
+            }
+            else { // darkMode == false
+                document.getElementById(`pl${i}-cd1`).innerHTML = `<img width="60" height="90" src="./img/cards/blue_back.png" alt="Table card slot 1">`
+                document.getElementById(`pl${i}-cd2`).innerHTML = `<img width="60" height="90" src="./img/cards/blue_back.png" alt="Table card slot 1">`
+            }
         }
         else {
             document.getElementById(`pl${i}-cd1`).innerHTML = `<img width="60" height="90" src="./img/cards/${players[i].card1.rank}_${players[i].card1.suit}.png" alt="Table card slot ${i+1}">`
