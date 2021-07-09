@@ -34,7 +34,7 @@ Check: See the next card, or reveal all villains' cards after last table card is
 
 Main Menu: Directs the user back to main menu. Will reset all game state.
 
-## Light/Dark Mode
+### Light/Dark Mode
 Available in both Main Menu and Game Menu. Clicking it inverses text and background colors, buttons have new hover colors, face down cards turn purple, and main menu screen's spinning poker chip changes to spinning coin.
 
 ### Technologies Used
