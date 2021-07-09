@@ -2,11 +2,10 @@
 ## Description
 Poker game that can support one user and up to 7 "villains" that mirror your betting moves. Heavy emphasis on Javascript, especially with clever use of array iterator methods.
 
-### Languages Used
-- Javascript (ES6)
-- HTML5
-- CSS3
-- Github
+## Motivation
+I love the mathematical as well as the psychological challenges that the game brings. That, and I won quite a bit of money playing with friends, even if mostly for fun. (Understandably, I am no longer "allowed" to play poker with them.)
+
+On a more technical level, I saw Poker as a way to challenge my problem solving skills, and it certainly delivered on that aspect.
 
 ## How to Play Poker
 DISCLAIMER: Do not play online for money unless you know what you're doing!
@@ -14,6 +13,8 @@ DISCLAIMER: Do not play online for money unless you know what you're doing!
 https://www.partypoker.com/en/how-to-play/texas-holdem
 
 ## How this application works
+LINK: https://jaehyun1009.github.io/poker-project/
+
 ### Main Menu
 About: Clicking this will direct the user to this page.
 
@@ -32,8 +33,15 @@ Check: See the next card, or reveal all villains' cards after last table card is
 
 Main Menu: Directs the user back to main menu. Will reset all game state.
 
-## Motivation
-"I LOVE MONEY" - Mr. Krabs
+### Technologies Used
+- Javascript (ES6)
+- HTML5
+- CSS3
+- Github
+
+## Wireframe
+The wireframe looks almost completely different (and even more basic) from what I have now, but I'm posting it regardless to show how much your program can change in a short amount of time.
+(https://wireframe.cc/RLLnBE)
 
 ## Screenshots
 ![Main Menu](https://i.imgur.com/QF4WnSA.png)
@@ -57,19 +65,29 @@ Main Menu: Directs the user back to main menu. Will reset all game state.
 ![Game over](https://i.imgur.com/hl7BKaF.png)
 
 ## Lessons Learned
+I learned to be extremely familiar with array iterator methods, since I used it extensively to check for hand rank. I didn't think it would be possible to have most of these functions in one line using some and filter methods.
+
+According to glassdoor, devising an algorithm for finding a hand of full house was an [actual Amazon interview question.](https://www.glassdoor.com/Interview/An-optimal-algorithm-to-check-whether-a-hand-of-cards-was-a-full-house-in-Poker-or-not-QTN_642094.htm)
+
+I also had trouble with isStraightFlush() more than I thought I would with the 7 hand configuration. There was an edge case where the 7 hand combination would have a flush and a straight, but not straight flush. Because of this, I had to come up with an entire new way to solve the problem and that took another hour or so. On the bright side, I was also able to refactor my code for isStraight().
+
+The problem I was most proud of solving was dealing with kickers and flush comparisons between multiple players. Separating the ranks between ones that made the hand and didn't was a problem on its own, but I was at an impasse for quite a bit on ranking kickers and flush tiebreakers. I eventually solved the problem by converting the array of ranks into "base 13" numbers using string concatenation and knowledge of endianness.
+
+```
+Example problem: Compare these kickers and determine the highest one: [10, 11, 12], [2, 10, 13], [3, 10, 13] (highest), [8, 9, 13]
+[5, 6, 10] => [10, 11, 12] => "12" + "11" + "10" => 121110
+[2, 10, 13] => [13, 10, 2] => "13" + "10" + "02" => 131002
+[3, 10, 13] => [13, 10, 3] => "13" + "10" + "03" => 131003 (highest)
+[8, 9, 13] => [13, 9, 8] => "13" + "09" + "08" => 130908
+```
 
 ## Stretch Goals
-~~Support up to 8 players (7 computer villains)~~
-
-~~Implement proper tiebreaker system~~
-
-~~Implement proper betting system~~ Basic betting system is done, but somewhat different from how a real poker game plays due to lack of AI.
-
-Implement timer for minimum bet to go up periodically
-
-Support mobile users
-
-Add rudimentary AI (randomly raising and folding depending on their hand strength in relation to the board. Random numbers will act as bluff)
+- [x] Support up to 8 players (7 computer villains)
+- [x] Implement proper tiebreaker system
+- [ ] ~~Implement proper betting system~~ Basic betting system is done, but somewhat different from how a real poker game plays due to lack of AI.
+- [ ] Implement timer for minimum bet to go up periodically
+- [ ] Support mobile users
+- [ ] Add rudimentary AI (randomly raising and folding depending on their hand strength in relation to the board. Random numbers will act as bluff)
 
 ## Resources
 Spinning poker chip image: https://dribbble.com/shots/3151889-Poker-Chip-Spin

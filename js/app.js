@@ -255,7 +255,6 @@ raiseButtonEl.addEventListener(`click`, function(){
 
     // Sanity checks
     // If additional bet is less than minimum bet, and that additional bet is not going all in, alert the user of incorrect betting amount.
-
     if (additionalBet < minimumBet){
         if (additionalBet != players[0].money)
             alert("Please place your bet greater than the minimum required or go all-in.")
@@ -294,7 +293,6 @@ foldButtonEl.addEventListener(`click`, function(){
             
             players.forEach(function(player){
                 if (winningPlayers.includes(player.name))
-
                     // "winning" player all the money from each player's bet
                     player.money += players.reduce((total, player) => total + player.bet, 0)
             })
@@ -595,8 +593,8 @@ function findHandRank(obj){
         return suits
     }, {1:0, 2:0, 3:0, 4:0})
     const rankCount = hand.reduce(function(ranks, card){
-            ranks[card.rank]++
-            return ranks
+        ranks[card.rank]++
+        return ranks
     }, {1:0, 2:0, 3:0, 4:0, 5:0, 6:0, 7:0, 8:0, 9:0, 10:0, 11:0, 12:0, 13:0})
 
     // Checks for each hand rank condition using findHandRank helper functions
@@ -870,14 +868,12 @@ function determineScore(obj, hand, suits, ranks){
 
         // Only one 3 of a kind, which means than other 4 cards form a pair or two.
         if (matchingValue2 == 0){
-
             for (const key in ranks){
                 if (ranks[key] == 2 && !matchingValue2)
                     matchingValue2 = parseInt(key)
                 else if (ranks[key] == 2 && !matchingValue3)
                     matchingValue3 = parseInt(key)
             }
-
         }
 
         if (matchingValue1 == Rank.ACE)
@@ -916,6 +912,7 @@ function determineScore(obj, hand, suits, ranks){
     // Sort kickers from highest to lowest by reversing the array.
     // Then converts the array to a "base 13" number with highest rank as highest significand for easy integer comparison after parseInt
     if (obj.kicker != null){
+
         const reverseKicker = obj.kicker.reverse()
         obj.kicker = parseInt(reverseKicker.reduce(function(stringNum, val){
 
@@ -925,6 +922,7 @@ function determineScore(obj, hand, suits, ranks){
             return stringNum + val
 
         },""))
+
     }
 
 }
