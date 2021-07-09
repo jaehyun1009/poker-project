@@ -68,11 +68,12 @@ The wireframe looks almost completely different (and even more basic) from what 
 ![Game over](https://i.imgur.com/hl7BKaF.png)
 
 ## Lessons Learned
-I learned to be extremely familiar with array iterator methods, since I used it extensively to check for hand rank. I didn't think it would be possible to have most of these functions in one line using some and filter methods.
+I learned to be extremely familiar with array iterator methods, since I used it extensively to check for hand rank. I didn't think it would be possible to have most of these functions, but some and filter methods made it possible.
+(According to glassdoor, devising an algorithm for finding a hand of full house was an [actual Amazon interview question.](https://www.glassdoor.com/Interview/An-optimal-algorithm-to-check-whether-a-hand-of-cards-was-a-full-house-in-Poker-or-not-QTN_642094.htm))
 
-According to glassdoor, devising an algorithm for finding a hand of full house was an [actual Amazon interview question.](https://www.glassdoor.com/Interview/An-optimal-algorithm-to-check-whether-a-hand-of-cards-was-a-full-house-in-Poker-or-not-QTN_642094.htm)
+Array iterator methods were also very useful in other scenarios. When I needed to convert of array of card objects to array of ranks, for example, the map function did the trick. Reduce function was also used to, for example, "reduce" hand of 7 cards to number of suits and ranks in a hand, which made for a very easy calculation of hand ranks.
 
-I also had trouble with isStraightFlush() more than I thought I would with the 7 hand configuration. There was an edge case where the 7 hand combination would have a flush and a straight, but not straight flush. Because of this, I had to come up with an entire new way to solve the problem and that took another hour or so. On the bright side, I was also able to refactor my code for isStraight().
+I had trouble with isStraightFlush() more than I thought I would with the 7 hand configuration. There was an edge case where the 7 hand combination would have a flush and a straight, but not straight flush. Because of this, I had to come up with an entire new way to solve the problem and that took another hour or so. On the bright side, I was also able to refactor my code for isStraight().
 
 The problem I was most proud of solving was dealing with kickers and flush comparisons between multiple players. Separating the ranks between ones that made the hand and didn't was a problem on its own, but I was at an impasse for quite a bit on ranking kickers and flush tiebreakers. I eventually solved the problem by converting the array of ranks into "base 13" numbers using string concatenation and knowledge of endianness.
 
