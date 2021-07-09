@@ -102,6 +102,7 @@ const player7El = document.getElementById(`player7`)
     startingMoney: Amount of money each player starts out with
     numberOfPlayers: self-explanatory, but changes accoring to the number you chose on the main screen.
     minimumBet: Minimum amount of money a player must bet in each round
+    originalMinimumBet: minimumBet that does not change. Useful for calculating how many times to multiply the bets based on how many players are out.
     players: list of player objects that each consist of the following:
         name: identifier of player
         money: amount of money a player has
@@ -120,9 +121,11 @@ let stage = 0
 let startingMoney = 10000
 let numberOfPlayers
 let minimumBet
+let originalMinimumBet
 let players = []
 let winningPlayers = []
 let heroWins = false
+let gameOver = false
 
 /*
 
@@ -133,7 +136,11 @@ let heroWins = false
 // Alerts the user if they really want to go back to prevent players from accidentally going back to the main menu.
 mainMenuButtonEl.addEventListener(`click`, function(){
 
-    if (window.confirm(`Going back to the main menu will reset the entire game.\nAre you sure you want to go back?`))
+    if (heroWins)
+        init()
+    else if (gameOver)
+        init()
+    else if (window.confirm(`Going back to the main menu will reset the entire game.\nAre you sure you want to go back?`))
         init()
 
 })
@@ -144,6 +151,7 @@ startGameEl.addEventListener(`click`, function(){
 
     numberOfPlayers = playerNumberEl.value
     minimumBet = Math.round(startingMoney / (20 * numberOfPlayers))
+    originalMinimumBet = minimumBet
 
     players = [{
         name: 'Hero',
@@ -342,8 +350,9 @@ function init(){
     player6El.hidden = true
     player7El.hidden = true
 
-    // reset game winning status
+    // reset game winning and game over status
     heroWins = false
+    gameOver = false
     winnersEl.innerText = ``
 
 }
@@ -396,12 +405,12 @@ function resetTable(){
     if (numberOfPlayers == 1)
         players[0].money = startingMoney
 
-    let newMinimumBet = minimumBet
+    minimumBet = originalMinimumBet
 
     // Multiply minimum bet by 2 for each player that's out of the game
     for (let i=0; i<numberOfPlayers; i++){
         if (players[i].money <= 0)
-            newMinimumBet *= 2
+            minimumBet *= 2
     }
 
     for (let i=0; i<numberOfPlayers; i++){
@@ -417,7 +426,7 @@ function resetTable(){
         if (players[i].money > 0){
             players[i].card1 = deck.pop()
             players[i].card2 = deck.pop()
-            players[i].money > newMinimumBet ? players[i].bet = newMinimumBet : players[i].bet = players[i].money
+            players[i].money > minimumBet ? players[i].bet = minimumBet : players[i].bet = players[i].money
             players[i].money -= players[i].bet
         }
         else{
@@ -532,6 +541,7 @@ function render(){
             checkButtonEl.disabled = true
             winnersEl.style.color = `red`
             winnersEl.innerText = `Game Over!`
+            gameOver = true
         }
 
     }
@@ -858,7 +868,7 @@ function determineScore(obj, hand, suits, ranks){
                 matchingValue2 = parseInt(key)
         }
 
-        // Only 1 3 of a kind, which means than other 4 cards form a pair or two.
+        // Only one 3 of a kind, which means than other 4 cards form a pair or two.
         if (matchingValue2 == 0){
 
             for (const key in ranks){

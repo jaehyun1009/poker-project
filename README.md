@@ -1,4 +1,12 @@
 # Poker Project
+## Description
+Poker game that can support one user and up to 7 "villains" that mirror your betting moves. Heavy emphasis on Javascript, especially with clever use of array iterator methods.
+
+### Languages Used
+- Javascript (ES6)
+- HTML5
+- CSS3
+- Github
 
 ## How to Play Poker
 DISCLAIMER: Do not play online for money unless you know what you're doing!
@@ -47,6 +55,8 @@ Main Menu: Directs the user back to main menu. Will reset all game state.
 ![You are winner](https://i.imgur.com/qemsniU.png)
 
 ![Game over](https://i.imgur.com/hl7BKaF.png)
+
+## Lessons Learned
 
 ## Stretch Goals
 ~~Support up to 8 players (7 computer villains)~~
