@@ -92,3 +92,9 @@ Gold coin image: https://99designs.com/other-art-illustration/contests/simple-ve
 Images of 52 playing cards and face-down cards: http://acbl.mybigcommerce.com/52-playing-cards/
 
 confetti.js: https://gist.github.com/AvivJolt/5295793da533e4590d9449a514d2f62f#file-confetti-js
+
+Yay sound: https://www.youtube.com/watch?v=NEIl1Xvf174
+
+Background music when game plays (https://www.youtube.com/watch?v=Aj7ecVrNdPU)
+
+**Note**: The audio played is from a game called Persona 5, and its contents are trademarked and owned by the Atlus Co. Ltd. and Sega Corp. This audio is used for educational purposes only and is not intended for commercial use.

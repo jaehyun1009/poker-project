@@ -184,6 +184,12 @@ button.dark-mode:disabled{
 
 }
 
+#audio {
+
+    font-size: 24px;
+
+}
+
 #change-mode {
 
     font-size: 24px;

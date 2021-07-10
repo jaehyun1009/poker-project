@@ -75,6 +75,7 @@ const raiseButtonEl = document.getElementById(`raise`)
 const checkButtonEl = document.getElementById(`check`)
 const mainMenuButtonEl = document.getElementById(`goto-main`)
 const foldButtonEl = document.getElementById(`fold`)
+const audioToggleEl = document.getElementById(`audio`)
 
 // Table Elements
 const tableEl = document.getElementById(`table`)
@@ -116,6 +117,7 @@ const player7El = document.getElementById(`player7`)
     winningPlayers: Player(s) with the highest score at the end of a round. If there are more than 1 winning players, split the pot.
     heroWins: true if hero (you) is the last person standing.
     yayAudio: plays after you win the game
+    gameMusic: Audio that plays when you start the game. Can be toggled on and off
     
 */
 let deck = []
@@ -130,7 +132,9 @@ let winningPlayers = []
 let heroWins = false
 let gameOver = false
 let darkMode = false
+let audioMode = false
 let yayAudio = new Audio(`./audio/yay.mp3`)
+let gameMusic = new Audio(`./audio/casino.mp3`)
 
 /*
 
@@ -371,6 +375,23 @@ foldButtonEl.addEventListener(`click`, function(){
 
 })
 
+// When the text on top left button is clicked, pause and resume the audio.
+audioToggleEl.addEventListener(`click`, function(){
+
+    if (audioMode){
+        audioMode = false
+        gameMusic.pause()
+        audioToggleEl.innerText = `Resume Audio`
+    }
+    else{ // audioMode = false
+        audioMode = true
+        gameMusic.play()
+        audioToggleEl.innerText = `Pause Audio`
+    }
+
+})
+
+
 /*
 
     Functions
@@ -402,6 +423,8 @@ function init(){
     mainMenuEl.hidden = false
 
     tableEl.hidden = true
+    audioToggleEl.hidden = true
+    gameMusic.pause()
     for (const buttonEl of buttonEls)
         buttonEl.hidden = true
 
@@ -522,6 +545,9 @@ function render(){
     mainMenuEl.hidden = true
 
     tableEl.hidden = false
+    audioToggleEl.hidden = false
+    gameMusic.currentTime = 0 // audio is reset to beginning when playing a new game
+    gameMusic.play()
     for (const buttonEl of buttonEls)
         buttonEl.hidden = false
 
