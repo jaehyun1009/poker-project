@@ -116,7 +116,9 @@ const player7El = document.getElementById(`player7`)
         kicker: tiebreakers for hands with same score
     winningPlayers: Player(s) with the highest score at the end of a round. If there are more than 1 winning players, split the pot.
     heroWins: true if hero (you) is the last person standing.
+    audioMode: Determine pause or resume audio after clicking top left button during gameplay
     yayAudio: plays after you win the game
+    gameOverAudio: plays after you lose the game
     gameMusic: Audio that plays when you start the game. Can be toggled on and off
     
 */
@@ -134,6 +136,7 @@ let gameOver = false
 let darkMode = false
 let audioMode = true
 let yayAudio = new Audio(`./audio/yay.mp3`)
+let gameOverAudio = new Audio(`./audio/gameover.mp3`)
 let gameMusic = new Audio(`./audio/casino.mp3`)
 
 /*
@@ -247,6 +250,13 @@ startGameEl.addEventListener(`click`, function(){
                 kicker: null
         })
     }
+
+    // Start playing audio
+    audioToggleEl.hidden = false
+    audioToggleEl.disabled = false
+    gameMusic.currentTime = 0
+    gameMusic.play()
+    gameMusic.loop = true
 
     resetTable()
     render()
@@ -544,11 +554,6 @@ function render(){
     // Hide main menu and show game state
     mainMenuEl.hidden = true
 
-    audioToggleEl.hidden = false
-    gameMusic.currentTime = 0
-    gameMusic.play()
-    gameMusic.loop = true
-
     tableEl.hidden = false
     for (const buttonEl of buttonEls)
         buttonEl.hidden = false
@@ -635,8 +640,10 @@ function render(){
                 raiseButtonEl.disabled = true
                 winnersEl.style.color = `blue`
                 winnersEl.innerText = `You. Are. Winner.`
+                gameMusic.pause()
                 confetti.start()
                 yayAudio.play()
+                audioToggleEl.disabled = true
             }
 
         }
@@ -647,6 +654,9 @@ function render(){
             winnersEl.style.color = `firebrick`
             winnersEl.innerText = `Game Over!`
             gameOver = true
+            gameMusic.pause()
+            gameOverAudio.play()
+            audioToggleEl.disabled = true
         }
 
     }

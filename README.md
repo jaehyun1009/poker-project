@@ -95,6 +95,10 @@ confetti.js: https://gist.github.com/AvivJolt/5295793da533e4590d9449a514d2f62f#f
 
 Yay sound: https://www.youtube.com/watch?v=NEIl1Xvf174
 
-Background music when game plays (https://www.youtube.com/watch?v=Aj7ecVrNdPU)
+Background music when game plays: (https://www.youtube.com/watch?v=Aj7ecVrNdPU)
 
 **Note**: The audio played is from a game called Persona 5, and its contents are trademarked and owned by the Atlus Co. Ltd. and Sega Corp. This audio is used for educational purposes only and is not intended for commercial use.
+
+Super Mario game over audio: (https://www.youtube.com/watch?v=Furs535ly94)
+
+**Note**: This audio is copyrighted by Nintendo Co. Ltd. and Sega Corp. This audio is used for educational purposes only and is not intended for commercial use.
