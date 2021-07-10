@@ -90,3 +90,5 @@ Spinning poker chip image: https://dribbble.com/shots/3151889-Poker-Chip-Spin
 Gold coin image: https://99designs.com/other-art-illustration/contests/simple-very-straight-forward-d-gold-coin-animation-438878
 
 Images of 52 playing cards and face-down cards: http://acbl.mybigcommerce.com/52-playing-cards/
+
+confetti.js: https://gist.github.com/AvivJolt/5295793da533e4590d9449a514d2f62f#file-confetti-js

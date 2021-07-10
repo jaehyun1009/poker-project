@@ -115,6 +115,7 @@ const player7El = document.getElementById(`player7`)
         kicker: tiebreakers for hands with same score
     winningPlayers: Player(s) with the highest score at the end of a round. If there are more than 1 winning players, split the pot.
     heroWins: true if hero (you) is the last person standing.
+    yayAudio: plays after you win the game
     
 */
 let deck = []
@@ -129,6 +130,7 @@ let winningPlayers = []
 let heroWins = false
 let gameOver = false
 let darkMode = false
+let yayAudio = new Audio(`./audio/yay.mp3`)
 
 /*
 
@@ -394,6 +396,8 @@ function newDeck(){
 // Initializes game and shows beginning game screen
 function init(){
 
+    confetti.stop()
+
     // Initial state. Show main menu and hide game state.
     mainMenuEl.hidden = false
 
@@ -603,6 +607,8 @@ function render(){
                 raiseButtonEl.disabled = true
                 winnersEl.style.color = `blue`
                 winnersEl.innerText = `You. Are. Winner.`
+                confetti.start()
+                yayAudio.play()
             }
 
         }
