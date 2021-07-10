@@ -544,10 +544,12 @@ function render(){
     // Hide main menu and show game state
     mainMenuEl.hidden = true
 
-    tableEl.hidden = false
     audioToggleEl.hidden = false
-    gameMusic.currentTime = 0 // audio is reset to beginning when playing a new game
+    gameMusic.currentTime = 0
     gameMusic.play()
+    gameMusic.loop = true
+
+    tableEl.hidden = false
     for (const buttonEl of buttonEls)
         buttonEl.hidden = false
 
