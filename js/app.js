@@ -132,7 +132,7 @@ let winningPlayers = []
 let heroWins = false
 let gameOver = false
 let darkMode = false
-let audioMode = false
+let audioMode = true
 let yayAudio = new Audio(`./audio/yay.mp3`)
 let gameMusic = new Audio(`./audio/casino.mp3`)
 
