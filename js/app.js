@@ -427,8 +427,6 @@ function newDeck(){
 // Initializes game and shows beginning game screen
 function init(){
 
-    confetti.stop()
-
     // Initial state. Show main menu and hide game state.
     mainMenuEl.hidden = false
 
@@ -641,7 +639,6 @@ function render(){
                 winnersEl.style.color = `blue`
                 winnersEl.innerText = `You. Are. Winner.`
                 gameMusic.pause()
-                confetti.start()
                 yayAudio.play()
                 audioToggleEl.disabled = true
             }
